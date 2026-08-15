@@ -1,0 +1,146 @@
+/*
+ * Research dashboard urgency highlights
+ *
+ * Meetings:
+ * - within three days: strong accent background
+ * - within seven days: medium accent background
+ * - within one month: soft accent background
+ *
+ * Tasks:
+ * - overdue: red background
+ * - due today: strong accent background
+ * - due tomorrow: medium accent background
+ * - due within three days: soft accent background
+ */
+
+:is(.research-home, .research-dashboard) {
+  --home-urgency-overdue: color-mix(
+    in srgb,
+    var(--text-error) 26%,
+    var(--background-primary)
+  );
+  --home-urgency-strong: color-mix(
+    in srgb,
+    var(--interactive-accent) 28%,
+    var(--background-primary)
+  );
+  --home-urgency-medium: color-mix(
+    in srgb,
+    var(--interactive-accent) 18%,
+    var(--background-primary)
+  );
+  --home-urgency-soft: color-mix(
+    in srgb,
+    var(--interactive-accent) 12%,
+    var(--background-primary)
+  );
+  --dashboard-priority-high: color-mix(
+    in srgb,
+    var(--text-error) 20%,
+    var(--background-primary)
+  );
+  --dashboard-priority-medium: color-mix(
+    in srgb,
+    var(--text-warning) 16%,
+    var(--background-primary)
+  );
+  --dashboard-priority-normal: color-mix(
+    in srgb,
+    var(--text-accent) 8%,
+    var(--background-primary)
+  );
+  --dashboard-priority-low: color-mix(
+    in srgb,
+    var(--text-muted) 10%,
+    var(--background-primary)
+  );
+}
+
+/* The last Dataview column carries a hidden marker used to style each row. */
+:is(.research-home, .research-dashboard)
+  table.dataview:has(a[data-href^="_UI-"])
+  :is(th, td):last-child {
+  display: none;
+}
+
+:is(.research-home, .research-dashboard)
+  table.dataview
+  tbody
+  tr:has(a[data-href="_UI-Urgency-Overdue"])
+  > td {
+  background-color: var(--home-urgency-overdue) !important;
+}
+
+:is(.research-home, .research-dashboard)
+  table.dataview
+  tbody
+  tr:has(a[data-href="_UI-Urgency-Strong"])
+  > td {
+  background-color: var(--home-urgency-strong) !important;
+}
+
+:is(.research-home, .research-dashboard)
+  table.dataview
+  tbody
+  tr:has(a[data-href="_UI-Urgency-Medium"])
+  > td {
+  background-color: var(--home-urgency-medium) !important;
+}
+
+:is(.research-home, .research-dashboard)
+  table.dataview
+  tbody
+  tr:has(a[data-href="_UI-Urgency-Soft"])
+  > td {
+  background-color: var(--home-urgency-soft) !important;
+}
+
+:is(.research-home, .research-dashboard)
+  table.dataview
+  tbody
+  tr:has(a[data-href="_UI-Priority-High"])
+  > td {
+  background-color: var(--dashboard-priority-high) !important;
+}
+
+:is(.research-home, .research-dashboard)
+  table.dataview
+  tbody
+  tr:has(a[data-href="_UI-Priority-Medium"])
+  > td {
+  background-color: var(--dashboard-priority-medium) !important;
+}
+
+:is(.research-home, .research-dashboard)
+  table.dataview
+  tbody
+  tr:has(a[data-href="_UI-Priority-Normal"])
+  > td {
+  background-color: var(--dashboard-priority-normal) !important;
+}
+
+:is(.research-home, .research-dashboard)
+  table.dataview
+  tbody
+  tr:has(a[data-href="_UI-Priority-Low"])
+  > td {
+  background-color: var(--dashboard-priority-low) !important;
+}
+
+/* Tasks exposes relative due dates as today, future-1d, future-2d, and so on. */
+.research-home
+  .plugin-tasks-query-result
+  .task-list-item[data-task-due="today"] {
+  background-color: var(--home-urgency-strong);
+  border-radius: var(--radius-s);
+}
+
+.research-home
+  .plugin-tasks-query-result
+  .task-list-item:is(
+    [data-task-due="future-1d"],
+    [data-task-due="future-2d"]
+  ) {
+  background-color: var(--home-urgency-soft);
+  border-radius: var(--radius-s);
+}

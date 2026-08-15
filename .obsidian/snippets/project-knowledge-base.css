@@ -1,0 +1,177 @@
+/* Project folder notes: compact Yuque-like document tree. */
+.project-kb .project-kb-meta {
+  margin: -0.35rem 0 1.5rem;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+}
+
+.project-kb .table-view-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 0.45rem;
+}
+
+.project-kb .table-view-table thead {
+  display: none;
+}
+
+.project-kb .table-view-table td {
+  border: 0;
+  padding: 0.2rem 0;
+}
+
+.project-kb .table-view-table td:first-child {
+  position: relative;
+  width: 100%;
+}
+
+.project-kb .table-view-table td:first-child::after {
+  position: absolute;
+  top: 50%;
+  right: 0.75rem;
+  left: 0;
+  border-top: 1px dashed var(--background-modifier-border);
+  content: "";
+}
+
+.project-kb .table-view-table td:first-child a {
+  position: relative;
+  z-index: 1;
+  padding-right: 0.75rem;
+  background: var(--background-primary);
+  text-decoration: none;
+}
+
+.project-kb .table-view-table td:last-child {
+  padding-left: 0.5rem;
+  color: var(--text-muted);
+  font-size: var(--font-ui-smaller);
+  white-space: nowrap;
+}
+
+.project-section .block-language-dataviewjs table {
+  margin-top: 1rem;
+}
+
+/* Project Idea tree: keep hierarchy compact and make relationship warnings visible. */
+.project-kb .block-language-dataviewjs ul {
+  margin-block: 0.35rem 0.75rem;
+}
+
+.project-kb .block-language-dataviewjs li {
+  margin-block: 0.25rem;
+}
+
+.project-kb .project-kb-warning {
+  color: var(--text-warning);
+  font-size: var(--font-ui-small);
+}
+
+/* Unified Research Question → Idea → Experiment tree. */
+.project-kb .project-research-tree {
+  margin-block: 0.75rem 1.5rem;
+}
+
+.project-kb .project-research-tree-row {
+  display: flex;
+  min-width: 0;
+  align-items: center;
+  min-height: 1.8rem;
+  line-height: 1.4;
+}
+
+.project-kb .project-research-tree-depth-0 {
+  margin-top: 0.65rem;
+  font-weight: var(--font-semibold);
+}
+
+.project-kb .project-research-tree-prefix {
+  flex: 0 0 auto;
+  color: var(--text-faint);
+  font-family: var(--font-monospace);
+  white-space: pre;
+}
+
+.project-kb .project-research-tree-id {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  padding: 0.05rem 0.38rem;
+  margin-right: 0.55rem;
+  border: 1px solid var(--background-modifier-border-hover);
+  border-radius: var(--radius-s);
+  background: var(--background-secondary);
+  color: var(--text-muted);
+  font-family: var(--font-monospace);
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-medium);
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.project-kb .project-research-tree-link {
+  min-width: 0;
+  overflow: hidden;
+  flex: 0 1 auto;
+  text-decoration: none;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.project-kb .project-research-tree-leader {
+  min-width: 1.5rem;
+  flex: 1 1 auto;
+  margin-inline: 0.6rem;
+  border-top: 1px dashed var(--background-modifier-border);
+}
+
+.project-kb .project-research-tree-time {
+  flex: 0 0 auto;
+  color: var(--text-muted);
+  font-family: var(--font-monospace);
+  font-size: var(--font-ui-smaller);
+  white-space: nowrap;
+}
+
+/* Project Meetings: reuse the Project Files row and place status before time. */
+.project-kb .project-meeting-status {
+  flex: 0 0 auto;
+  padding: 0.05rem 0.38rem;
+  margin-right: 0.65rem;
+  border-radius: var(--radius-s);
+  background: var(--background-secondary);
+  color: var(--text-muted);
+  font-family: var(--font-monospace);
+  font-size: var(--font-ui-smaller);
+  font-weight: var(--font-medium);
+  line-height: 1.35;
+  white-space: nowrap;
+}
+
+.project-kb .project-meeting-status-planned {
+  color: var(--text-accent);
+}
+
+.project-kb .project-research-tree-warning-section {
+  padding-top: 0.65rem;
+  margin-top: 0.9rem;
+  border-top: 1px dotted var(--background-modifier-border-hover);
+}
+
+.project-kb .project-research-tree-warning-row {
+  min-height: 1.8rem;
+}
+
+.project-kb .project-research-tree-warning-icon {
+  flex: 0 0 auto;
+  margin-right: 0.5rem;
+  color: var(--color-yellow);
+  font-size: 1.05em;
+  line-height: 1;
+}
+
+/* Keep page-level CSS classes active without showing the implementation detail. */
+.metadata-property[data-property-key="cssclasses"],
+.metadata-property[data-property-key="cssclass"] {
+  display: none;
+}

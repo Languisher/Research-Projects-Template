@@ -1,0 +1,11 @@
+{
+  "classFilesPath": "99 Templates/Metadata Schema/",
+  "frontmatterOnly": true,
+  "displayFieldsInContextMenu": false,
+  "showFileClassSelectInModal": false,
+  "enableProperties": true,
+  "enableEditor": true,
+  "enableFileExplorer": true,
+  "enableTabHeader": true,
+  "settingsVersion": "5.0"
+}
