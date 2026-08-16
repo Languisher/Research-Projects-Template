@@ -34,11 +34,12 @@ Knowledge + Research Question + Idea status + Project state
 |---|---|
 | `00 Dashboard/` | 自动汇总、导航和工作流检查 |
 | `01 Inbox/` | 尚未分类的临时捕获 |
-| `02 Projects/<Project>/` | Project Folder Note 及其 assets、Docs、Research Questions、Ideas、Experiments、Papers |
+| `02 Projects/<Project>/` | Project Folder Note 及其 assets、Docs、Research Questions、Ideas、Experiments |
 | `02 Projects/<Project>/Docs/` | Proposal 与其他无类型的普通项目文档 |
 | `02 Projects/_Shared/` | 跨项目或暂未确定唯一归属的研究材料 |
 | `03 Meetings/` | 独立的会议板块；集中保存会议记录与行动项，通过 `project` 字段关联 Project |
 | `04 Knowledge/<Knowledge>/` | Knowledge Folder Note、assets 及其普通知识文档 |
+| `05 Papers/` | Zotero Integration 导入的论文笔记；以 citekey 命名，通过关系字段关联其他实体 |
 | `08 Misc/` | 行政和生活琐事的背景、材料和跟进记录 |
 | `90 Assets/` | Project 与 Knowledge 之外的通用附件，以及 Excalidraw 和 Zotero 资源 |
 | `99 Templates/` | 各类笔记模板，不作为研究结论来源 |
@@ -148,7 +149,11 @@ Project 或 Knowledge 内的子页会在顶部显示上下文导航：`↑ 上�
 
 在 `02 Projects/<Project>/` 或 `04 Knowledge/<Knowledge>/` 内任意层级的笔记中粘贴、拖入或选择插入附件时，附件会自动保存到对应实体根目录的 `assets/`。Project 与 Knowledge 之外的笔记继续使用全局 `90 Assets/`；全局目录中已有的附件不会自动迁移。
 
-### 5. 创建第一个 Project
+### 5. 从 Zotero 导入论文
+
+在命令面板执行 `Zotero Integration: Import Paper`。导入结果固定为 `05 Papers/<citekey>.md`，论文中的图片写入 `90 Assets/Zotero/<citekey>/`；再次导入时，模板中的持久化分析区会保留已写内容。导入后按需填写 `project`、`knowledge` 和 `related_ideas`，用 Wiki Links 关联其他实体。
+
+### 6. 创建第一个 Project
 
 执行 `New Project / Knowledge` 并选择 `Project`，例如创建：
 
@@ -156,7 +161,7 @@ Project 或 Knowledge 内的子页会在顶部显示上下文导航：`↑ 上�
 LLM Inference Acceleration
 ```
 
-QuickAdd 会创建 `02 Projects/LLM Inference Acceleration/LLM Inference Acceleration.md` 和无标签的 `Docs/Proposal.md`，并自动建立 `assets/`、`Docs/`、`Research Questions/`、`Ideas/` 和 `Experiments/`；后三个类型目录还会包含同名 Folder Note。Papers 按需放入对应 Project 子目录；Knowledge 独立创建在 `04 Knowledge/`；会议统一放入 `03 Meetings/`，跨项目研究材料放入 `_Shared`，不要复制成多份。`Docs/Proposal.md` 始终显示在 Project 首页的 Project Files 顶端。
+QuickAdd 会创建 `02 Projects/LLM Inference Acceleration/LLM Inference Acceleration.md` 和无标签的 `Docs/Proposal.md`，并自动建立 `assets/`、`Docs/`、`Research Questions/`、`Ideas/` 和 `Experiments/`；后三个类型目录还会包含同名 Folder Note。Papers 通过 Zotero Integration 的 `Import Paper` 统一导入 `05 Papers/`，再用 frontmatter 关系字段关联 Project、Knowledge 和 Idea，不在 Project 内复制；Knowledge 独立创建在 `04 Knowledge/`；会议统一放入 `03 Meetings/`，跨项目研究材料放入 `_Shared`。`Docs/Proposal.md` 始终显示在 Project 首页的 Project Files 顶端。
 
 首先只填写：
 
@@ -459,7 +464,7 @@ Zotero Paper 是例外：文件名保持 citekey，YAML `title` 用于查询，�
 - Experiment：`02 Projects/项目名称/Experiments/EXP<n>-简短标题.md`
 - Meeting：`03 Meetings/MEETING-YYYY-MM-DD-会议主题.md`
 - Knowledge：`04 Knowledge/知识标题/知识标题.md`（文件夹和 Folder Note 同名）
-- Paper：保持 Zotero citekey 生成的文件名
+- Paper：`05 Papers/<citekey>.md`（由 Zotero Integration 的 `Import Paper` 创建）
 
 ## 一个完整例子
 

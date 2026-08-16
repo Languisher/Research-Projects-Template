@@ -7,7 +7,7 @@ TABLE
   status AS "状态",
   title AS "标题",
   project AS "项目"
-FROM "02 Projects"
+FROM "05 Papers"
 WHERE type = "paper"
   AND (status = "未读" OR status = "阅读中")
 SORT status DESC, file.mtime DESC
@@ -19,7 +19,7 @@ SORT status DESC, file.mtime DESC
 TABLE
   title AS "标题",
   project AS "项目"
-FROM "02 Projects"
+FROM "05 Papers"
 WHERE type = "paper"
   AND status = "已读"
   AND !knowledge

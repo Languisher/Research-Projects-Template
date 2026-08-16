@@ -7,8 +7,8 @@
   "citeFormats": [],
   "exportFormats": [
     {
-      "name": "Import Research Paper",
-      "outputPathTemplate": "02 Projects/_Shared/Papers/{{citekey}}.md",
+      "name": "Import Paper",
+      "outputPathTemplate": "05 Papers/{{citekey}}.md",
       "imageOutputPathTemplate": "90 Assets/Zotero/{{citekey}}/",
       "imageBaseNameTemplate": "image",
       "templatePath": "99 Templates/Zotero Paper.md"

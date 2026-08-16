@@ -11,10 +11,6 @@ tags:
   - paper
 ---
 
-```dataviewjs
-await dv.view("99 Templates/Views/Entity Navigation");
-```
-
 # {{title}}
 
 ## 引用信息

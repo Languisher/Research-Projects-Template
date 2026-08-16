@@ -10,6 +10,7 @@
 - `02 Projects/_Shared/`：跨项目或暂时无法确定唯一 Project 归属的研究材料
 - `03 Meetings/`：跨项目统一管理的会议记录与行动项；`Meetings.md` 是汇总页，会议实体通过 `project` 字段关联 Project
 - `04 Knowledge/<Knowledge>/`：一个 Knowledge 对应一个独立知识目录；`<Knowledge>.md` 是同名 Folder Note 和知识入口
+- `05 Papers/`：Zotero Integration 的 `Import Paper` 统一导入位置；论文只保存一份，并通过 frontmatter 关系字段关联 Project、Knowledge 和 Idea
 - `08 Misc/`：行政、生活琐事和不属于研究实体的独立 Task 笔记
 - `90 Assets/`：Project 与 Knowledge 之外的通用附件和图片；`Excalidraw/` 与 `Zotero/` 分别保存对应资源
 - `99 Templates/`：笔记模板、Metadata Schema 和 Dataview Views；不作为研究结论来源
@@ -29,13 +30,12 @@
 ├── Ideas/
 │   ├── Ideas.md               # type: index
 │   └── IDEA<n>-标题.md
-├── Experiments/
-│   ├── Experiments.md         # type: index
-│   └── EXP<n>-标题.md
-└── Papers/                        # 按需创建
+└── Experiments/
+    ├── Experiments.md         # type: index
+    └── EXP<n>-标题.md
 ```
 
-`New Project` 默认创建 `assets/`、`Docs/`、`Research Questions/`、`Ideas/` 和 `Experiments/`。只有后三个默认包含同名索引笔记；`Docs/`、`assets/` 和 `Papers/` 不要为了对称而额外创建 Folder Note。
+`New Project` 默认创建 `assets/`、`Docs/`、`Research Questions/`、`Ideas/` 和 `Experiments/`。只有后三个默认包含同名索引笔记；`Docs/` 和 `assets/` 不要为了对称而额外创建 Folder Note。Paper 不放入 Project 内部，统一由 Zotero Integration 导入 `05 Papers/`。
 
 每个 Knowledge 使用以下结构：
 
@@ -96,10 +96,10 @@ Project 或 Knowledge 的子页顶部使用 `99 Templates/Views/Entity Navigatio
 - 保持 Obsidian Markdown 和 UTF-8 编码。
 - 新建笔记前先检查是否已经存在同主题笔记。
 - 使用对应的 `99 Templates/` 模板结构。
-- 新建 Project 内实体时先确定主要归属 Project：Research Question、Idea、Experiment 和 Paper 放入对应 Project 的类型子目录。Knowledge 不选择 Project 或其他 Knowledge 作为归属，独立使用 `04 Knowledge/<Knowledge>/<Knowledge>.md` Folder Note，补充文档放入其 `Docs/`。其他无法确定或跨多个项目的研究材料使用 `02 Projects/_Shared/`。Meeting 是例外：统一放入 `03 Meetings/`，并通过 `project` 字段关联 Project。
+- 新建 Project 内实体时先确定主要归属 Project：Research Question、Idea 和 Experiment 放入对应 Project 的类型子目录。Paper 是全库来源实体，统一由 Zotero Integration 的 `Import Paper` 导入 `05 Papers/`，并通过 `project`、`knowledge` 和 `related_ideas` 字段关联其他实体，不在 Project 内复制。Knowledge 不选择 Project 或其他 Knowledge 作为归属，独立使用 `04 Knowledge/<Knowledge>/<Knowledge>.md` Folder Note，补充文档放入其 `Docs/`。其他无法确定或跨多个项目的研究材料使用 `02 Projects/_Shared/`。Meeting 是例外：统一放入 `03 Meetings/`，并通过 `project` 字段关联 Project。
 - Project 与 Knowledge 的 Folder Note 必须与各自文件夹同名。`Research Questions/`、`Ideas/` 和 `Experiments/` 的索引笔记也必须与子目录同名，并使用 `99 Templates/Project Section.md`。
 - 新建 Project 时必须同时创建上述默认目录、`assets/` 和索引，并用 `99 Templates/Proposal.md` 创建无 frontmatter、无 tag 的 `Docs/Proposal.md`。
-- Project 或 Knowledge 内的 Research Question、Idea、Experiment、Paper、类型索引、Proposal 和普通 `Docs/` 文档都应在 frontmatter 之后、正文之前调用 `99 Templates/Views/Entity Navigation.js`。Codex 直接创建这些笔记时也要保留该导航块。
+- Project 或 Knowledge 内的 Research Question、Idea、Experiment、类型索引、Proposal 和普通 `Docs/` 文档都应在 frontmatter 之后、正文之前调用 `99 Templates/Views/Entity Navigation.js`。Codex 直接创建这些笔记时也要保留该导航块。`05 Papers/` 中的 Paper 不属于 Project 或 Knowledge 子页，不使用该导航块。
 - 普通项目文档只放入 `Docs/`，不设置 `type`；`Docs/` 下允许多级子目录。Project Files 镜像实际目录层级，将 Proposal 固定在最前，并将 DOC 与 Research 关系树分组显示且不渲染卡片式外框。
 - `Docs/` 同层的 DOC 和 DIR 默认按名称自然排序。在 Project Files 中拖拽后，顺序以当前 Project 或 Knowledge 目录的相对路径写入其 Folder Note frontmatter 的 `doc_order`；未列入的项目仍按名称排列。调整 `doc_order` 不代表移动文件。
 - Meeting 文件名统一使用 `MEETING-YYYY-MM-DD-简短标题.md`。
@@ -130,6 +130,7 @@ Project 或 Knowledge 的子页顶部使用 `99 Templates/Views/Entity Navigatio
 - Idea 之间只使用 `parent_idea` 表示候选解法的细化层级，不把 Research Question 当作 Idea 的父节点。
 - Project 首页将独立文档按关系统一展示为 `Research Question → Idea → Experiment` 树；这只是展示层级，不改变三类文档各自的权威位置。
 - `03 Meetings/` 是会议记录的唯一存放位置；Project 只通过 `project` 字段和查询聚合相关会议。
+- `05 Papers/` 是论文笔记的唯一存放位置；Zotero Integration 以 citekey 命名并写入该目录，Project、Knowledge 和 Idea 只通过关系字段或正文链接引用论文。
 - `02 Projects/<Project>/Experiments/` 记录可复现的实验配置、环境、结果和结论。
 - `04 Knowledge/<Knowledge>/<Knowledge>.md` 中的结论必须能追溯到来源，并区分证据与推断。
 - 重要决定应同步到相关项目笔记，而不只留在 Meeting 中。
