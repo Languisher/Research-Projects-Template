@@ -14,8 +14,14 @@ TABLE WITHOUT ID
   dateformat(file.mtime, "MM/dd HH:mm") AS "更新"
 FROM "02 Projects"
 WHERE type = "project"
-  AND (status = "active" OR status = "blocked")
+  AND (status = "进行中" OR status = "已暂停")
 SORT status ASC, file.mtime DESC
+```
+
+## 所有待办
+
+```dataviewjs
+await dv.view("99 Templates/Views/Dashboard Todos");
 ```
 
 ## 下一步实验
@@ -28,10 +34,10 @@ TABLE WITHOUT ID
   dateformat(file.mtime, "MM/dd HH:mm") AS "更新"
 FROM "02 Projects"
 WHERE type = "experiment"
-  AND (status = "ready" OR status = "running")
+  AND (status = "准备中" OR status = "进行中")
 SORT status DESC, file.mtime DESC
 ```
 
 ## 导航
 
-[[00 Dashboard/Projects|项目]] · [[00 Dashboard/Research Questions|研究问题]] · [[00 Dashboard/Papers|论文]] · [[00 Dashboard/Ideas|想法]] · [[00 Dashboard/Experiments|实验]] · [[03 Meetings/Meetings|会议]] · [[00 Dashboard/Tasks|任务]] · [[00 Dashboard/Workflow Review|工作流检查]]
+[[Projects|项目]] · [[Research Questions|研究问题]] · [[Papers|论文]] · [[Ideas|想法]] · [[Experiments|实验]] · [[00 Dashboard/Knowledge|知识]] · [[Meetings|会议]] · [[00 Dashboard/Tasks|任务]]

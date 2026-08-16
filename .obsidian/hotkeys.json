@@ -26,15 +26,6 @@
       "key": "M"
     }
   ],
-  "quickadd:choice:eefe9452-2344-46a5-a4d6-2de3c90dc664": [
-    {
-      "modifiers": [
-        "Mod",
-        "Shift"
-      ],
-      "key": " "
-    }
-  ],
   "quickadd:choice:6b1885c5-ea2a-4b1c-a730-74b83542fd3a": [
     {
       "modifiers": [
@@ -78,6 +69,15 @@
         "Shift"
       ],
       "key": "K"
+    }
+  ],
+  "quickadd:choice:d3e0f2b6-11e7-4c1f-a14c-0e5c2fdb798a": [
+    {
+      "modifiers": [
+        "Mod",
+        "Shift"
+      ],
+      "key": "Enter"
     }
   ],
   "omnisearch:show-modal": [

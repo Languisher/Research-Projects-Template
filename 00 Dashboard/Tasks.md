@@ -3,7 +3,7 @@ cssclasses:
   - research-dashboard
 ---
 
-[[00 Dashboard/Research Home|← 研究主页]] · [[00 Dashboard/Projects|项目]] · [[00 Dashboard/Experiments|实验]] · [[03 Meetings/Meetings|会议]]
+[[Research Home|← 研究主页]] · [[Projects|项目]] · [[Experiments|实验]] · [[Meetings|会议]]
 
 ## 逾期与今日到期
 

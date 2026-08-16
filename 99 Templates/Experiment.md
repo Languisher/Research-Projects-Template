@@ -145,17 +145,18 @@ if (creationProjectName) {
 -%>
 ---
 type: experiment
-status: proposed
+status: 准备中
 created: <% tp.date.now("YYYY-MM-DD") %>
 updated: <% tp.date.now("YYYY-MM-DD") %>
-project: <%*
+project:
+<%*
 const pathParts = tp.file.folder(true).split("/");
 const projectsRootIndex = pathParts.indexOf("02 Projects");
 const projectName = projectsRootIndex >= 0 ? pathParts[projectsRootIndex + 1] : "";
 
 if (projectName && projectName !== "_Shared") {
   const projectPath = `02 Projects/${projectName}/${projectName}`;
-  tR += JSON.stringify(`[[${projectPath}]]`);
+  tR += `  - ${JSON.stringify(`[[${projectPath}]]`)}`;
 }
 %>
 idea: <%* if (selectedIdeaLink) tR += JSON.stringify(selectedIdeaLink); %>
@@ -168,3 +169,7 @@ external_artifacts:
 tags:
   - experiment
 ---
+
+```dataviewjs
+await dv.view("99 Templates/Views/Entity Navigation");
+```

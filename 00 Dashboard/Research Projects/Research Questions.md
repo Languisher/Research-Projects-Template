@@ -1,4 +1,4 @@
-[[00 Dashboard/Research Home|← 研究主页]] · [[00 Dashboard/Projects|项目]] · [[00 Dashboard/Ideas|想法]] · [[00 Dashboard/Workflow Review|工作流检查]]
+[[Research Home|← 研究主页]] · [[Projects|项目]] · [[Ideas|想法]] · [[00 Dashboard/Workflow Review|工作流检查]]
 
 ## 研究问题
 

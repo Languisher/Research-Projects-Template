@@ -89,7 +89,7 @@ async function createProjectDocument(quickAddApi) {
 
   const file = await app.vault.create(
     `${targetFolder}/${targetName}.md`,
-    `# ${targetName}\n`,
+    `\`\`\`dataviewjs\nawait dv.view("99 Templates/Views/Entity Navigation");\n\`\`\`\n\n# ${targetName}\n`,
   );
   await app.workspace.getLeaf("tab").openFile(file);
 }
@@ -424,7 +424,8 @@ const documents = folderPages.filter(
     page.file.path !== `${docsFolder}/Proposal.md` &&
     !page.type,
 );
-const inCurrentProject = (page) => normalizePath(page.project) === projectPath;
+const inCurrentProject = (page) =>
+  asArray(page.project).some((project) => normalizePath(project) === projectPath);
 const questions = pages.filter(
   (page) => page.type === "research-question" && inCurrentProject(page),
 );

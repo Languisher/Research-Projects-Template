@@ -306,33 +306,22 @@
     },
     {
       "id": "d3e0f2b6-11e7-4c1f-a14c-0e5c2fdb798a",
-      "name": "New Project Document",
-      "type": "Template",
+      "name": "New Project / Knowledge Document",
+      "type": "Macro",
       "command": true,
-      "templatePath": "99 Templates/Project Document.md",
-      "fileNameFormat": {
-        "enabled": true,
-        "format": "__DOC-{{DATE:x}}"
-      },
-      "folder": {
-        "enabled": true,
-        "folders": [
-          "02 Projects"
-        ],
-        "chooseWhenCreatingNote": false,
-        "createInSameFolderAsActiveFile": false,
-        "chooseFromSubfolders": false
-      },
-      "appendLink": false,
-      "openFile": true,
-      "fileOpening": {
-        "location": "tab",
-        "direction": "vertical",
-        "mode": "default",
-        "focus": true
-      },
-      "fileExistsBehavior": {
-        "kind": "prompt"
+      "runOnStartup": false,
+      "macro": {
+        "id": "cc29434b-de1c-4941-8509-32f822229125",
+        "name": "New Project / Knowledge Document",
+        "commands": [
+          {
+            "id": "a17595fe-0992-4626-a1f8-017acccaad67",
+            "name": "New Project Knowledge Document",
+            "type": "UserScript",
+            "path": "99 Templates/Scripts/New Project Knowledge Document.js",
+            "settings": {}
+          }
+        ]
       }
     }
   ],

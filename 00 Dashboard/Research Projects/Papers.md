@@ -1,4 +1,4 @@
-[[00 Dashboard/Research Home|← 研究主页]] · [[00 Dashboard/Ideas|想法]]
+[[Research Home|← 研究主页]] · [[Ideas|想法]]
 
 ## 待读论文
 
@@ -9,7 +9,7 @@ TABLE
   project AS "项目"
 FROM "02 Projects"
 WHERE type = "paper"
-  AND (status = "unread" OR status = "reading")
+  AND (status = "未读" OR status = "阅读中")
 SORT status DESC, file.mtime DESC
 ```
 
@@ -21,7 +21,7 @@ TABLE
   project AS "项目"
 FROM "02 Projects"
 WHERE type = "paper"
-  AND status = "read"
+  AND status = "已读"
   AND !knowledge
 SORT file.mtime ASC
 ```

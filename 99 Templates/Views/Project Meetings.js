@@ -1,5 +1,7 @@
 const current = dv.current().file;
 
+await dv.view("99 Templates/Views/Meeting Status Sync");
+
 function normalizePath(value) {
   if (!value) return null;
 
@@ -23,6 +25,13 @@ function asArray(value) {
     return Array.from(value);
   }
   return [value];
+}
+
+function frontmatterValue(page, key) {
+  const file = app.vault.getAbstractFileByPath(page.file.path);
+  return file
+    ? app.metadataCache.getFileCache(file)?.frontmatter?.[key]
+    : null;
 }
 
 const projectPath = normalizePath(current.path);
@@ -76,7 +85,7 @@ const meetings = Array.from(dv.pages('"03 Meetings"'))
   .filter(
     (meeting) =>
       meeting.type === "meeting" &&
-      asArray(meeting.project).some(isCurrentProject),
+      asArray(frontmatterValue(meeting, "project")).some(isCurrentProject),
   )
   .sort(
     (left, right) =>

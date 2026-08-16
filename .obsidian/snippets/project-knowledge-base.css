@@ -1,4 +1,36 @@
 /* Project folder notes: compact Yuque-like document tree. */
+.project-context-navigation {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.45rem;
+  margin-block: 0.15rem 1rem;
+}
+
+.project-context-navigation-button {
+  display: inline-flex;
+  align-items: center;
+  min-height: 1.75rem;
+  padding: 0.18rem 0.58rem;
+  border: 1px solid var(--background-modifier-border);
+  border-radius: var(--radius-s);
+  background: transparent;
+  box-shadow: none;
+  color: var(--text-muted);
+  font-size: var(--font-ui-small);
+  font-weight: var(--font-medium);
+}
+
+.project-context-navigation-button:hover {
+  border-color: var(--background-modifier-border-hover);
+  background: var(--background-modifier-hover);
+  color: var(--text-normal);
+}
+
+.project-context-navigation-button.is-disabled {
+  color: var(--text-faint);
+  cursor: not-allowed;
+}
+
 .project-kb .project-kb-meta {
   margin: -0.35rem 0 1.5rem;
   color: var(--text-muted);
@@ -276,21 +308,44 @@
 }
 
 /* Project Meetings: reuse the Project Files row and place status before time. */
+.project-kb .project-meeting-list {
+  margin-block: 0.45rem 1.25rem;
+}
+
+.project-kb .project-meeting-list .project-research-tree-row {
+  min-height: 1.45rem;
+  line-height: 1.25;
+}
+
+.project-kb .project-meeting-list .project-research-tree-depth-0 {
+  margin-top: 0.22rem;
+}
+
+.project-kb .project-meeting-list .project-research-tree-id {
+  padding: 0.02rem 0.32rem;
+  margin-right: 0.45rem;
+  line-height: 1.25;
+}
+
+.project-kb .project-meeting-list .project-research-tree-leader {
+  margin-inline: 0.45rem;
+}
+
 .project-kb .project-meeting-status {
   flex: 0 0 auto;
-  padding: 0.05rem 0.38rem;
-  margin-right: 0.65rem;
+  padding: 0.02rem 0.32rem;
+  margin-right: 0.45rem;
   border-radius: var(--radius-s);
   background: var(--background-secondary);
   color: var(--text-muted);
   font-family: var(--font-monospace);
   font-size: var(--font-ui-smaller);
   font-weight: var(--font-medium);
-  line-height: 1.35;
+  line-height: 1.25;
   white-space: nowrap;
 }
 
-.project-kb .project-meeting-status-planned {
+.project-kb .project-meeting-status-计划中 {
   color: var(--text-accent);
 }
 

@@ -1,3 +1,7 @@
+```dataviewjs
+await dv.view("99 Templates/Views/Entity Navigation");
+```
+
 # Proposal
 
 ## Background & Problem

@@ -4,7 +4,6 @@ function normalizePath(value) {
   if (!value) return null;
 
   let raw = value;
-  if (Array.isArray(raw)) raw = raw[0];
   if (raw && typeof raw === "object" && raw.path) raw = raw.path;
   if (typeof raw !== "string") return null;
 
@@ -45,13 +44,15 @@ function addPathLink(container, path, label) {
 }
 
 const projectPath = normalizePath(current.path);
+const inCurrentProject = (page) =>
+  asArray(page.project).some((project) => normalizePath(project) === projectPath);
 const ideas = Array.from(
   dv
     .pages('"02 Projects"')
     .where(
       (page) =>
         page.type === "idea" &&
-        normalizePath(page.project) === projectPath,
+        inCurrentProject(page),
     ),
 );
 
@@ -62,7 +63,7 @@ const questionsByPath = new Map(
       .where(
         (page) =>
           page.type === "research-question" &&
-          normalizePath(page.project) === projectPath,
+          inCurrentProject(page),
       ),
   ).map((page) => [normalizePath(page.file.path), page]),
 );

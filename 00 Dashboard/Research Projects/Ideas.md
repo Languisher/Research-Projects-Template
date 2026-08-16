@@ -1,4 +1,4 @@
-[[00 Dashboard/Research Home|← 研究主页]] · [[00 Dashboard/Research Questions|研究问题]] · [[00 Dashboard/Experiments|实验]] · [[00 Dashboard/Workflow Review|工作流检查]]
+[[Research Home|← 研究主页]] · [[Research Questions|研究问题]] · [[Experiments|实验]] · [[00 Dashboard/Workflow Review|工作流检查]]
 
 ## 当前想法
 
@@ -10,8 +10,7 @@ TABLE
   dateformat(file.mtime, "MM/dd HH:mm") AS "更新"
 FROM "02 Projects"
 WHERE type = "idea"
-  AND status != "rejected"
-  AND status != "archived"
+  AND status != "已结束"
 SORT file.mtime DESC
 ```
 
@@ -23,7 +22,7 @@ TABLE
   research_questions AS "研究问题"
 FROM "02 Projects"
 WHERE type = "idea"
-  AND status = "testable"
+  AND status = "验证中"
   AND !experiments
 SORT file.mtime DESC
 ```

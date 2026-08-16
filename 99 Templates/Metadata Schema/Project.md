@@ -8,12 +8,11 @@ fields:
     options:
       sourceType: ValuesList
       valuesList:
-        "0": active
-        "1": blocked
-        "2": completed
-        "3": archived
+        "0": 进行中
+        "1": 已暂停
+        "2": 已完成
     id: research-project-status
     path: ""
 ---
 
-项目的 `status` 只能从 `active`、`blocked`、`completed`、`archived` 中选择。
+项目的 `status` 只能从 `进行中`、`已暂停`、`已完成` 中选择。

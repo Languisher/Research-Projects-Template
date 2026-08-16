@@ -3,7 +3,11 @@ cssclasses:
   - research-dashboard
 ---
 
-[[00 Dashboard/Research Home|← 研究主页]] · [[00 Dashboard/Projects|项目]] · [[00 Dashboard/Tasks|任务]]
+[[Research Home|← 研究主页]] · [[Projects|项目]] · [[00 Dashboard/Tasks|任务]]
+
+```dataviewjs
+await dv.view("99 Templates/Views/Meeting Status Sync");
+```
 
 ## 即将召开
 
@@ -29,7 +33,7 @@ TABLE
   ) AS "_紧急程度"
 FROM "03 Meetings"
 WHERE type = "meeting"
-  AND status != "cancelled"
+  AND status != "已取消"
   AND (
     date > date(today)
     OR (
@@ -72,7 +76,7 @@ TABLE
   ) AS "_紧急程度"
 FROM "03 Meetings"
 WHERE type = "meeting"
-  AND status != "cancelled"
+  AND status != "已取消"
   AND (
     date < date(today)
     OR (

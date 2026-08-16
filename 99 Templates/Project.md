@@ -2,7 +2,7 @@
 type: project
 cssclasses:
   - project-kb
-status: active
+status: 进行中
 created: <% tp.date.now("YYYY-MM-DD") %>
 updated: <% tp.date.now("YYYY-MM-DD") %>
 deadline:

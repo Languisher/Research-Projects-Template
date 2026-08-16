@@ -4,7 +4,7 @@
 
 ## 目录结构
 
-- `00 Dashboard/`：自动汇总、导航和工作流检查；不在 Dashboard 中重复维护实体内容
+- `00 Dashboard/`：自动汇总与导航；`Research Home.md` 聚合当前 Project、全库开放待办和下一步 Experiment，其余页面按实体类型聚合；不在 Dashboard 中重复维护实体内容
 - `01 Inbox/Inbox.md`：尚未分类的临时捕获
 - `02 Projects/<Project>/`：一个 Project 对应一个独立研究知识库；`<Project>.md` 是同名 Folder Note 和项目入口
 - `02 Projects/_Shared/`：跨项目或暂时无法确定唯一 Project 归属的研究材料
@@ -48,6 +48,8 @@
 
 Knowledge 首页复用 Project 首页的 To-dos 和 Project Files 视觉与文档树交互，但不显示时间线、Research 关系树或 Meetings。Project 与 Knowledge 的 Project Files 分组都不渲染卡片式外框。
 
+Project 或 Knowledge 的子页顶部使用 `99 Templates/Views/Entity Navigation.js` 显示上下文导航：在 Files 面板定位当前文件，并返回当前 Project 或 Knowledge 的 Folder Note。
+
 ## 权威信息位置
 
 - Project 的最新状态、关键决定和下一步只维护在 `02 Projects/<Project>/<Project>.md`。
@@ -71,12 +73,12 @@ Knowledge 首页复用 Project 首页的 To-dos 和 Project Files 视觉与文�
 
 状态约定：
 
-- Project：`active`、`blocked`、`completed`、`archived`
-- Idea：`seed`、`developing`、`testable`、`testing`、`supported`、`rejected`、`merged`、`archived`
-- Experiment：`proposed`、`planned`、`ready`、`running`、`analyzed`、`closed`、`cancelled`
-- Knowledge：`draft`、`active`、`disputed`、`superseded`、`archived`
-- Meeting：`planned`、`completed`、`cancelled`
-- Paper：`unread`、`reading`、`read`、`archived`
+- Project：`进行中`、`已暂停`、`已完成`
+- Idea：`构思中`、`验证中`、`已结束`
+- Experiment：`准备中`、`进行中`、`已结束`
+- Knowledge：`草稿`、`有效`、`已归档`
+- Meeting：`计划中`、`已完成`、`已取消`
+- Paper：`未读`、`阅读中`、`已读`
 
 ## 检索知识
 
@@ -97,6 +99,7 @@ Knowledge 首页复用 Project 首页的 To-dos 和 Project Files 视觉与文�
 - 新建 Project 内实体时先确定主要归属 Project：Research Question、Idea、Experiment 和 Paper 放入对应 Project 的类型子目录。Knowledge 不选择 Project 或其他 Knowledge 作为归属，独立使用 `04 Knowledge/<Knowledge>/<Knowledge>.md` Folder Note，补充文档放入其 `Docs/`。其他无法确定或跨多个项目的研究材料使用 `02 Projects/_Shared/`。Meeting 是例外：统一放入 `03 Meetings/`，并通过 `project` 字段关联 Project。
 - Project 与 Knowledge 的 Folder Note 必须与各自文件夹同名。`Research Questions/`、`Ideas/` 和 `Experiments/` 的索引笔记也必须与子目录同名，并使用 `99 Templates/Project Section.md`。
 - 新建 Project 时必须同时创建上述默认目录、`assets/` 和索引，并用 `99 Templates/Proposal.md` 创建无 frontmatter、无 tag 的 `Docs/Proposal.md`。
+- Project 或 Knowledge 内的 Research Question、Idea、Experiment、Paper、类型索引、Proposal 和普通 `Docs/` 文档都应在 frontmatter 之后、正文之前调用 `99 Templates/Views/Entity Navigation.js`。Codex 直接创建这些笔记时也要保留该导航块。
 - 普通项目文档只放入 `Docs/`，不设置 `type`；`Docs/` 下允许多级子目录。Project Files 镜像实际目录层级，将 Proposal 固定在最前，并将 DOC 与 Research 关系树分组显示且不渲染卡片式外框。
 - `Docs/` 同层的 DOC 和 DIR 默认按名称自然排序。在 Project Files 中拖拽后，顺序以当前 Project 或 Knowledge 目录的相对路径写入其 Folder Note frontmatter 的 `doc_order`；未列入的项目仍按名称排列。调整 `doc_order` 不代表移动文件。
 - Meeting 文件名统一使用 `MEETING-YYYY-MM-DD-简短标题.md`。
@@ -113,6 +116,7 @@ Knowledge 首页复用 Project 首页的 To-dos 和 Project Files 视觉与文�
 - 内部关系使用 `[[Wiki Links]]`。当存在同名笔记或关系字段需稳定解析时，使用从 vault 根开始、不带 `.md` 的完整路径，例如 `[[02 Projects/<Project>/<Project>]]`。
 - 任务格式使用 `- [ ] #task ... 📅 YYYY-MM-DD`。
 - Meeting 只关联一个 Project 时，任务沿用 Meeting 的 `project`；关联多个 Project 时，每条任务必须添加 `[project:: [[Project 名称]]]`，一条任务属于多个 Project 时重复添加该字段。
+- `Research Home.md` 的“所有待办”通过 `99 Templates/Views/Dashboard Todos.js` 聚合全库开放 `#task`，显示所属 Project、截止时间和紧急程度，并按截止日期与显式优先级排序。Dashboard 只做聚合，任务仍只在产生它的笔记中维护。
 - 保留已有 YAML frontmatter 字段和用户撰写内容。
 - 论文笔记中的引用、摘要和 Zotero 导入内容默认视为来源内容，不随意改写。
 - 除非明确要求，不删除笔记、附件或 `.obsidian` 配置。
@@ -138,6 +142,7 @@ Knowledge 首页复用 Project 首页的 To-dos 和 Project Files 视觉与文�
 - 检查 YAML frontmatter 是否有效。
 - 检查新增的 Wiki Link 是否指向正确笔记。
 - 检查文件的实际目录、`type` 与实体类型是否一致；普通 `Docs/` 文档不应设置 `type`。
+- 检查 Project 或 Knowledge 子页是否包含 Entity Navigation，且导航块位于 frontmatter 之后、正文之前。
 - 检查推进中的 Idea 是否连接至少一个同 Project 的 Research Question。
 - 检查任务和日期格式。
 - 检查状态值是否来自本文件约定的生命周期。

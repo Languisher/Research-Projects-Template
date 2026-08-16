@@ -69,11 +69,12 @@ Knowledge + Research Question + Idea status + Project state
 ## 快捷键
 
 ```
-⌘⇧Space   Capture Research Thought
+⌘⇧Space   Inbox
 ⌘⇧R       New Research Question
 ⌘⇧E       New Experiment
 ⌘⇧I       New Idea
 ⌘⇧M       New Meeting
+⌘⇧T       Task
 ⌘⇧P       New Project / Knowledge
 ⌘⇧K       New Knowledge
 ⌘⇧A       Tasks: Create or edit task
@@ -100,14 +101,12 @@ Project 首页和同名类型索引已经可以直接使用。若希望“点击
 
 ### 2. 检查入口
 
-打开 [[00 Dashboard/Research Home|Research Home]]，确认能够看到：
+打开 [[Research Home|Research Home]]，确认能够看到：
 
-- Active Projects
-- Active Experiments
-- Testable Ideas
-- Upcoming Meetings
-- Recently Updated Knowledge
-- Due Today
+- 当前项目：`进行中` 和 `已暂停` Project
+- 所有待办：按截止日期和显式优先级排序的全库开放 `#task`
+- 下一步实验：`准备中` 和 `进行中` Experiment
+- 通往 Project、Research Question、Paper、Idea、Experiment、Knowledge、Meeting 和 Task Dashboard 的导航
 
 刚开始使用时，大部分表格为空是正常现象。
 
@@ -140,6 +139,8 @@ Project Files 会将 DOC 与 `Research Question → Idea → Experiment` 关系�
 Knowledge 首页与 Project 首页共用标题、关键词、To-dos 和 Project Files 样式及文档树交互，但只显示 `Docs/`，不包含甘特时间线、`Research Question → Idea → Experiment` 板块或 Meetings。Knowledge 的普通文档同样可在 Project Files 中创建、折叠和拖拽排序。
 
 Project 关系树直接从文件名中分离编号和文章标题，例如 `RQ1-标题` 会显示为编号徽标 `RQ1` 与标题“标题”。不另行维护 `title` 属性，因此重命名文件后展示会自动同步。
+
+Project 或 Knowledge 内的子页会在顶部显示上下文导航：`↑ 上级目录` 用于在 Files 面板中定位当前文件，`⌂ 项目首页` 或 `⌂ 知识首页` 用于返回当前实体的 Folder Note。按住 `⌘` 点击首页按钮可在新标签页打开。
 
 可以在 Obsidian 设置中为这些命令分配快捷键。
 
@@ -180,7 +181,7 @@ Project 首页会把独立保存的文档统一呈现为 `Research Question → 
 好的下一步行动：
 
 ```md
-- [[EXP-20260724-KV Cache 位分布分析]] — 完成变量定义和成功标准
+- [[EXP1-KV Cache 位分布分析]] — 完成变量定义和成功标准
 ```
 
 不好的任务：
@@ -193,9 +194,9 @@ Project 首页会把独立保存的文档统一呈现为 `Research Question → 
 
 - Project：解决一个 blocker 或完成一个 milestone
 - Research Question：澄清范围、回答标准或更新当前认识
-- Idea：`seed → developing` 或 `developing → testable`
-- Experiment：`proposed → planned`、`ready → running` 或 `running → analyzed`
-- Knowledge：`draft → active`
+- Idea：`构思中 → 验证中`
+- Experiment：`准备中 → 进行中` 或 `进行中 → 已结束`
+- Knowledge：`草稿 → 有效`
 
 ### 工作中：按内容类型归档
 
@@ -279,7 +280,7 @@ Knowledge:
 无损压缩只有在节省的传输时间超过 codec 开销时才能加速
 ```
 
-第二个例子如果只是你的推断，应保持 `draft`，直到获得充分来源或 Experiment 证据。
+第二个例子如果只是你的推断，应保持 `草稿`，直到获得充分来源或 Experiment 证据。
 
 ## Research Question ↔ Idea
 
@@ -296,30 +297,20 @@ Research Question 是项目需要回答的问题，Idea 是候选解法或可验
 Idea 生命周期：
 
 ```text
-seed
-  → developing
-  → testable
-  → testing
-  → supported / rejected
-  → merged / archived
+构思中 → 验证中 → 已结束
 ```
 
 规则：
 
-- `seed`：只有初步假设
-- `developing`：正在补充知识依据和机制
-- `testable`：已有可证伪预测、指标和最小验证方式
-- `testing`：已有正在执行的 Experiment
-- `supported`：现有证据支持，但不等于绝对正确
-- `rejected`：核心预测被否定
-- `merged`：内容并入另一个 Idea
-- `archived`：暂时停止推进
+- `构思中`：正在补充假设、依据、机制和可证伪预测
+- `验证中`：已具备最小验证方式，准备或正在执行 Experiment
+- `已结束`：不再推进；支持、否定或合并等具体结果记录在 Evidence 和 Conclusion 中
 
 被否定的 Idea 不删除，它记录了哪些路径已经被验证过。
 
 ## Idea → Experiment
 
-Idea 只有在 `testable` 后才应该创建正式 Experiment。
+Idea 只有在具备可证伪预测和最小验证方式、并进入 `验证中` 后，才应该创建正式 Experiment。
 
 Experiment 笔记只负责研究协议和结论：
 
@@ -348,17 +339,10 @@ Experiment 笔记只负责研究协议和结论：
 Experiment 生命周期：
 
 ```text
-proposed
-  → planned
-  → ready
-  → running
-  → analyzed
-  → closed
-
-任意未完成状态 → cancelled
+准备中 → 进行中 → 已结束
 ```
 
-`analyzed` 表示结果已经解释；`closed` 表示 Idea、Knowledge 和 Project 也已完成同步。
+`已结束` 同时覆盖正常完成和取消；具体结果、取消原因和同步情况写在 Conclusion 中。
 
 ## Meeting 工作流
 
@@ -374,57 +358,58 @@ proposed
 Meeting 状态：
 
 ```text
-planned → completed
-        ↘ cancelled
+计划中 → 已完成
+        ↘ 已取消
 ```
 
-完成会议模板中的 Close-out Checklist 后，再设置为 `completed`。
+完成会议模板中的 Close-out Checklist 后，再设置为 `已完成`。
 
 ## 每周 Review
 
-打开 [[00 Dashboard/Workflow Review|Workflow Review]]，依次处理：
+从 [[Research Home|研究主页]] 进入各 Dashboard，依次处理：
 
 1. 清空或分类 Inbox。
 2. 检查缺少 Knowledge Basis 的 Ideas。
-3. 检查 `testable` 但没有 Experiment 的 Ideas。
+3. 检查 `验证中` 但没有 Experiment 的 Ideas。
 4. 检查缺少 Project 或 Idea 的 Experiments。
 5. 为 Knowledge 补充来源、边界条件和置信度。
 6. 关闭 Meeting Action Items。
-7. 更新每个 Active Project 的 Current State。
-8. 每个 Active Project 只保留一个 Next Concrete Step。
-9. 将不再推进的内容标记为 rejected、cancelled、superseded 或 archived。
+7. 更新每个 `进行中` Project 的 Current State。
+8. 每个 `进行中` Project 只保留一个 Next Concrete Step。
+9. 将不再推进的 Idea 和 Experiment 标记为 `已结束`，并在正文说明结果或原因。
 
-建议每周只选择少量 Active Projects。其他项目使用 `blocked` 或 `archived` 明确暂停。
+建议每周只选择少量 `进行中` Project。其他项目使用 `已暂停` 明确暂停。
 
 ## Dashboard
 
 | Dashboard | 用途 |
 |---|---|
-| `Research Home` | 每天的统一入口 |
-| `Projects` | Active、Blocked 和 Completed Projects |
+| `Research Home` | 当前 Project、按紧急程度排序的全库待办、下一步 Experiment 和导航 |
+| `Projects` | 进行中、已暂停和已完成的 Project |
+| `Research Questions` | 查看研究问题、关联 Idea 及尚无 Idea 的问题 |
 | `Papers` | 阅读队列和等待提炼 Knowledge 的论文 |
-| `Ideas` | Idea pipeline 和缺失知识依据的 Ideas |
-| `Experiments` | Experiment pipeline、缺失上下文和实验任务 |
+| `Ideas` | 当前 Idea 以及 `验证中` 但尚无 Experiment 的 Idea |
+| `Experiments` | 当前 Experiment 以及 `准备中` / `进行中` 队列 |
+| `Knowledge` | 未归档与已归档的可复用知识条目 |
 | `Meetings` | 位于 `03 Meetings/Meetings.md`，汇总 Upcoming Meetings 和开放行动项 |
-| `Tasks` | 全库任务聚合 |
-| `Workflow Review` | 检查工作流断点 |
+| `Tasks` | 分别汇总逾期/今日到期、未排期和 `#waiting` 任务 |
 
 Dashboard 使用 Dataview 和 Tasks 自动生成。不要手工复制列表到 Dashboard。
 
 ## 状态约定
 
-只使用以下状态，避免产生 `in progress`、`ongoing`、`done` 等同义值：
+只使用以下中文状态，避免产生同义值：
 
 | 类型 | 状态 |
 |---|---|
-| Project | `active`, `blocked`, `completed`, `archived` |
-| Idea | `seed`, `developing`, `testable`, `testing`, `supported`, `rejected`, `merged`, `archived` |
-| Experiment | `proposed`, `planned`, `ready`, `running`, `analyzed`, `closed`, `cancelled` |
-| Knowledge | `draft`, `active`, `disputed`, `superseded`, `archived` |
-| Meeting | `planned`, `completed`, `cancelled` |
-| Paper | `unread`, `reading`, `read`, `archived` |
+| Project | `进行中`, `已暂停`, `已完成` |
+| Idea | `构思中`, `验证中`, `已结束` |
+| Experiment | `准备中`, `进行中`, `已结束` |
+| Knowledge | `草稿`, `有效`, `已归档` |
+| Meeting | `计划中`, `已完成`, `已取消` |
+| Paper | `未读`, `阅读中`, `已读` |
 
-在 Obsidian 中，以上 `status` 现在由 Metadata Menu 按笔记标签显示为下拉选项；在笔记的右键菜单选择 **Field Options → status** 即可更新。不要直接手打新值。对应的选项定义在 `99 Templates/Metadata Schema/`，修改状态集合时只改相应的 schema 文件。
+在 Obsidian 中，以上 `status` 由 Metadata Menu 按笔记标签显示为下拉选项；在笔记的右键菜单选择 **Field Options → status** 即可更新。不要直接手打新值。选项定义在 `99 Templates/Metadata Schema/`；修改状态集合时，还要同步更新笔记模板的默认值和 Dashboard 查询。
 
 ## 任务约定
 
@@ -435,6 +420,8 @@ Dashboard 使用 Dataview 和 Tasks 自动生成。不要手工复制列表到 D
 ```
 
 不要在 Project 和 Experiment 中复制同一个任务；在产生任务的笔记中维护它即可。
+
+Research Home 的“所有待办”表会显示待办内容、所属 Project、截止时间和紧急程度。排序优先考虑逾期和近期截止日期，再考虑 Tasks 的显式优先级标记；没有 Project 上下文的任务会标记为“未归属”。
 
 Project 首页的 `To-dos` 会自动收集 Project 文件夹内的开放 `#task`，以及关联 Meeting 中的开放 `#task`。单 Project 会议中的任务自动归属；当 Meeting 的 `project` 同时关联多个 Project 时，必须给每条任务添加任务级归属：
 
@@ -460,15 +447,16 @@ Task 的单项状态也限定为四种：待办（`[ ]`）、进行中（`[/]`�
 
 ## 文件命名与标题
 
-一般研究笔记以文件名作为唯一主标题，并由 Obsidian 的 inline title 显示；正文不再重复写 `# 标题`，从 `##` 开始组织章节。不要仅为重复文件名而添加 YAML `title`。
+结构化的 Research Question、Idea 和 Experiment 以文件名作为唯一主标题，并由 Obsidian 的 inline title 显示；正文从 `##` 开始，不为重复文件名添加 YAML `title`。Project、Knowledge、类型索引和 `Docs/` 文档保留可读的一级标题。
 
 Zotero Paper 是例外：文件名保持 citekey，YAML `title` 用于查询，正文保留可读的 `# 论文标题`。README 和 AGENTS 等需要脱离 Obsidian 独立阅读的仓库文档也保留一级标题。
 
 - Project：`02 Projects/项目名称/项目名称.md`（文件夹和 Folder Note 同名）
 - Proposal：`02 Projects/项目名称/Docs/Proposal.md`（无 tag）
 - 普通项目文档：`02 Projects/项目名称/Docs/文档标题.md`（无 `type`）
-- Idea：`IDEA-YYYYMMDD-简短标题.md`
-- Experiment：`EXP-YYYYMMDD-简短标题.md`
+- Research Question：`02 Projects/项目名称/Research Questions/RQ<n>-简短标题.md`
+- Idea：`02 Projects/项目名称/Ideas/IDEA<n>-简短标题.md`
+- Experiment：`02 Projects/项目名称/Experiments/EXP<n>-简短标题.md`
 - Meeting：`03 Meetings/MEETING-YYYY-MM-DD-会议主题.md`
 - Knowledge：`04 Knowledge/知识标题/知识标题.md`（文件夹和 Folder Note 同名）
 - Paper：保持 Zotero citekey 生成的文件名
@@ -480,13 +468,14 @@ Zotero Paper 是例外：文件名保持 citekey，YAML `title` 用于查询，�
 1. 在 Paper 中完成 My Analysis。
 2. 创建 Knowledge：
    `[[PCIe 数据搬运可能成为推理瓶颈]]`
-3. 创建 Idea：
-   `[[IDEA-20260724-KV Cache 无损压缩]]`
-4. Idea 的 Knowledge Basis 链接 Paper 和 Knowledge。
-5. 写出可证伪预测和成功/否定标准。
-6. Idea 变为 `testable`。
-7. 创建 Experiment：
-   `[[EXP-20260724-KV Cache 位分布分析]]`
+3. 创建 Research Question：
+   `[[RQ1-如何降低 KV Cache 传输开销]]`
+4. 创建并关联 Idea：
+   `[[IDEA1-KV Cache 无损压缩]]`
+5. Idea 的 Knowledge Basis 链接 Paper 和 Knowledge，`research_questions` 链接 `RQ1`。
+6. 写出可证伪预测和成功/否定标准，将 Idea 推进为 `验证中`。
+7. 创建并关联 Experiment：
+   `[[EXP1-KV Cache 位分布分析]]`
 8. Experiment 完成后：
    - 更新 Idea 的 Evidence
    - 创建或更新 Knowledge
@@ -505,7 +494,7 @@ Paper ↔ Knowledge ↔ Idea ↔ Experiment ↔ Project
 - 新建前先搜索是否已有同主题笔记。
 - 使用 Wiki Links，不使用复制粘贴维持关系。
 - 修改笔记后更新 `updated`。
-- Knowledge 必须有来源，或者保持 `draft`。
+- Knowledge 必须有来源，或者保持 `草稿`。
 - Experiment 结论必须区分结果和解释。
 - Meeting 完成前必须处理 Decisions 和 Action Items。
 - 模板和 Dashboard 不作为研究证据来源。

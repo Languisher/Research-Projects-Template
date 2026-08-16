@@ -1,4 +1,4 @@
-[[00 Dashboard/Research Home|← 研究主页]] · [[00 Dashboard/Projects|项目]] · [[00 Dashboard/Ideas|想法]]
+[[Research Home|← 研究主页]] · [[Projects|项目]] · [[Ideas|想法]]
 
 ## 当前实验
 
@@ -10,12 +10,11 @@ TABLE
   planned_date AS "计划日期"
 FROM "02 Projects"
 WHERE type = "experiment"
-  AND status != "closed"
-  AND status != "cancelled"
+  AND status != "已结束"
 SORT status ASC, file.mtime DESC
 ```
 
-## 准备执行与运行中
+## 下一步实验
 
 ```dataview
 TABLE
@@ -24,6 +23,6 @@ TABLE
   planned_date AS "计划日期"
 FROM "02 Projects"
 WHERE type = "experiment"
-  AND (status = "ready" OR status = "running")
+  AND (status = "准备中" OR status = "进行中")
 SORT planned_date ASC
 ```

@@ -8,13 +8,11 @@ fields:
     options:
       sourceType: ValuesList
       valuesList:
-        "0": draft
-        "1": active
-        "2": disputed
-        "3": superseded
-        "4": archived
+        "0": 草稿
+        "1": 有效
+        "2": 已归档
     id: research-knowledge-status
     path: ""
 ---
 
-知识条目的 `status` 只能从既定生命周期中选择。
+知识条目的 `status` 只能从 `草稿`、`有效`、`已归档` 中选择。争议、过时等情况在正文中说明。

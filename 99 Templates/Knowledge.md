@@ -16,7 +16,7 @@ tR += `---
 type: knowledge
 cssclasses:
   - project-kb
-status: draft
+status: 草稿
 created: ${today}
 updated: ${today}
 doc_order:
@@ -28,7 +28,7 @@ tags:
 -%>
 # <% tp.file.title %>
 
-**Keywords**：...
+
 
 ## To-dos
 

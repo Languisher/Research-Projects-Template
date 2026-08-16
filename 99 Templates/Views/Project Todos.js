@@ -31,6 +31,13 @@ function linkedPaths(value) {
   return asArray(value).map(normalizePath).filter(Boolean);
 }
 
+function frontmatterValue(page, key) {
+  const file = app.vault.getAbstractFileByPath(page.file.path);
+  return file
+    ? app.metadataCache.getFileCache(file)?.frontmatter?.[key]
+    : null;
+}
+
 function unique(values) {
   return Array.from(new Set(values));
 }
@@ -101,7 +108,9 @@ const meetings = current.type === "project"
   : [];
 
 for (const meeting of meetings) {
-  const meetingProjects = unique(linkedPaths(meeting.project));
+  const meetingProjects = unique(
+    linkedPaths(frontmatterValue(meeting, "project")),
+  );
   if (!meetingProjects.some(isCurrentProject)) continue;
 
   const isMultiProjectMeeting = meetingProjects.length > 1;

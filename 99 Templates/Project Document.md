@@ -97,5 +97,8 @@ while (await app.vault.adapter.exists(`${docsFolder}/${targetName}.md`)) {
 await tp.file.move(`${docsFolder}/${targetName}`);
 const documentTitle = targetName;
 -%>
-# <% documentTitle %>
+```dataviewjs
+await dv.view("99 Templates/Views/Entity Navigation");
+```
 
+# <% documentTitle %>

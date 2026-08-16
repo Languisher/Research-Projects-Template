@@ -25,11 +25,13 @@ function asArray(value) {
 }
 
 const projectPath = normalizePath(current.path);
+const inCurrentProject = (page) =>
+  asArray(page.project).some((project) => normalizePath(project) === projectPath);
 const questions = Array.from(
   dv.pages('"02 Projects"').where(
     (page) =>
       page.type === "research-question" &&
-      normalizePath(page.project) === projectPath,
+      inCurrentProject(page),
   ),
 ).sort((left, right) => left.file.name.localeCompare(
   right.file.name,
@@ -41,7 +43,7 @@ const ideas = Array.from(
   dv.pages('"02 Projects"').where(
     (page) =>
       page.type === "idea" &&
-      normalizePath(page.project) === projectPath,
+      inCurrentProject(page),
   ),
 );
 

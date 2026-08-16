@@ -4,6 +4,10 @@ cssclasses:
   - project-section
 ---
 
+```dataviewjs
+await dv.view("99 Templates/Views/Entity Navigation");
+```
+
 # `= this.file.name`
 
 ```dataviewjs

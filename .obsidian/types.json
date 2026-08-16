@@ -12,7 +12,7 @@
     "deadline": "date",
     "planned_date": "date",
     "completed_date": "date",
-    "project": "text",
+    "project": "multitext",
     "idea": "text",
     "ideas": "multitext",
     "experiments": "multitext",

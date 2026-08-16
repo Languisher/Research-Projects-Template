@@ -8,11 +8,11 @@ fields:
     options:
       sourceType: ValuesList
       valuesList:
-        "0": planned
-        "1": completed
-        "2": cancelled
+        "0": 计划中
+        "1": 已完成
+        "2": 已取消
     id: research-meeting-status
     path: ""
 ---
 
-会议的 `status` 只能从既定生命周期中选择。
+会议的 `status` 只能从 `计划中`、`已完成`、`已取消` 中选择。
