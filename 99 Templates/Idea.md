@@ -38,14 +38,30 @@ const formatProjectTime = (timestamp) => {
   const pad = (value) => String(value).padStart(2, "0");
   return `${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
-const selectedProject = await tp.system.suggester(
-  projectChoices.map(
-    (project) => `${project.name}  ·  ${formatProjectTime(project.lastUsed)}`,
-  ),
-  projectChoices,
-  true,
-  "选择 Project（最近使用优先）",
-);
+let selectedProject;
+const contextKey = "project-kb-quickadd-context";
+try {
+  const context = JSON.parse(sessionStorage.getItem(contextKey) || "null");
+  sessionStorage.removeItem(contextKey);
+  if (context && Date.now() - context.createdAt < 60_000) {
+    selectedProject = projectChoices.find(
+      (project) => `${project.folder}/${project.name}.md` === context.projectPath,
+    );
+  }
+} catch (error) {
+  sessionStorage.removeItem(contextKey);
+}
+
+if (!selectedProject) {
+  selectedProject = await tp.system.suggester(
+    projectChoices.map(
+      (project) => `${project.name}  ·  ${formatProjectTime(project.lastUsed)}`,
+    ),
+    projectChoices,
+    true,
+    "选择 Project（最近使用优先）",
+  );
+}
 const creationProjectName = selectedProject.name;
 
 const researchQuestionsFolder = `${selectedProject.folder}/Research Questions`;
@@ -172,32 +188,3 @@ parent_idea:
 tags:
   - idea
 ---
-
-> [!info] Idea 关系
-> `research_questions` 链接这个 Idea 尝试回答的一个或多个 Research Question 文档。`parent_idea` 只表示 Idea 之间的直接细化关系；顶层 Idea 留空。
-
-
-## 假设
-
-> 用一句可证伪的话写清「在什么条件下，因为什么机制，会出现什么结果」。
-
-## 依据与缺口
-
-- 触发 / 已知依据：
-- 新推断（尚待验证）：
-- 关键前提或风险：
-
-## 预测与最小验证
-
-- 可证伪预测：
-- 最小验证（操纵、测量、比较）：
-- 支持 / 否定标准：
-
-## 证据与判断
-
-- 支持或反例：
-- 当前判断与状态：
-
-## 下一步
-
-- [ ] #task 具体动作与产物 📅 YYYY-MM-DD

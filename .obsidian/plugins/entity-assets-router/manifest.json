@@ -1,0 +1,9 @@
+{
+  "id": "entity-assets-router",
+  "name": "Entity Assets Router",
+  "version": "1.0.0",
+  "minAppVersion": "1.5.0",
+  "description": "Routes Project and Knowledge attachments to each entity's assets folder.",
+  "author": "Local",
+  "isDesktopOnly": false
+}

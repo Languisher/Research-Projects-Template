@@ -38,14 +38,30 @@ const formatProjectTime = (timestamp) => {
   const pad = (value) => String(value).padStart(2, "0");
   return `${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
-const selectedProject = await tp.system.suggester(
-  projectChoices.map(
-    (project) => `${project.name}  ·  ${formatProjectTime(project.lastUsed)}`,
-  ),
-  projectChoices,
-  true,
-  "选择 Project（最近使用优先）",
-);
+let selectedProject;
+const contextKey = "project-kb-quickadd-context";
+try {
+  const context = JSON.parse(sessionStorage.getItem(contextKey) || "null");
+  sessionStorage.removeItem(contextKey);
+  if (context && Date.now() - context.createdAt < 60_000) {
+    selectedProject = projectChoices.find(
+      (project) => `${project.folder}/${project.name}.md` === context.projectPath,
+    );
+  }
+} catch (error) {
+  sessionStorage.removeItem(contextKey);
+}
+
+if (!selectedProject) {
+  selectedProject = await tp.system.suggester(
+    projectChoices.map(
+      (project) => `${project.name}  ·  ${formatProjectTime(project.lastUsed)}`,
+    ),
+    projectChoices,
+    true,
+    "选择 Project（最近使用优先）",
+  );
+}
 const creationProjectName = selectedProject.name;
 
 const ideasFolder = `${selectedProject.folder}/Ideas`;
@@ -65,20 +81,19 @@ const ideaChoices = allMarkdownFiles
     })
   );
 
-if (ideaChoices.length === 0) {
-  throw new Error(`${creationProjectName} 中还没有 Idea，请先创建一个。`);
+let selectedIdeaLink = "";
+if (ideaChoices.length > 0) {
+  const selectedIdea = await tp.system.suggester(
+    ideaChoices.map((file) => {
+      const status = app.metadataCache.getFileCache(file)?.frontmatter?.status;
+      return status ? `${file.basename}  ·  ${status}` : file.basename;
+    }),
+    ideaChoices,
+    true,
+    `选择 ${creationProjectName} 的 Idea`,
+  );
+  selectedIdeaLink = `[[${selectedIdea.path.replace(/\.md$/i, "")}]]`;
 }
-
-const selectedIdea = await tp.system.suggester(
-  ideaChoices.map((file) => {
-    const status = app.metadataCache.getFileCache(file)?.frontmatter?.status;
-    return status ? `${file.basename}  ·  ${status}` : file.basename;
-  }),
-  ideaChoices,
-  true,
-  `选择 ${creationProjectName} 的 Idea`,
-);
-const selectedIdeaLink = `[[${selectedIdea.path.replace(/\.md$/i, "")}]]`;
 const requestedTitle = await tp.system.prompt(
   "请输入实验标题",
   "",
@@ -143,7 +158,7 @@ if (projectName && projectName !== "_Shared") {
   tR += JSON.stringify(`[[${projectPath}]]`);
 }
 %>
-idea: <%* tR += JSON.stringify(selectedIdeaLink); %>
+idea: <%* if (selectedIdeaLink) tR += JSON.stringify(selectedIdeaLink); %>
 meetings:
 planned_date:
 completed_date:
@@ -153,33 +168,3 @@ external_artifacts:
 tags:
   - experiment
 ---
-
-## 问题
-
-- 要回答：
-- 预期（可选）：
-
-## 计划
-
-- 改什么 / 和谁比较：
-- 看什么指标：
-- 什么结果算有用：
-- 必须保持不变的条件：
-- 执行步骤：
-  1.
-- 代码、配置或数据位置：
-
-## 结果
-
-- 原始数据 / 产物：
-- 观察到：
-- 异常或限制：
-
-## 结论
-
-- 回答：
-- 对所属项目的影响：
-
-## 下一步
-
-- [ ] #task 具体动作与产物 📅 YYYY-MM-DD

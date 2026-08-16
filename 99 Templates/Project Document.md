@@ -38,6 +38,7 @@ const formatProjectTime = (timestamp) => {
   const pad = (value) => String(value).padStart(2, "0");
   return `${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
+
 let selectedProject;
 const contextKey = "project-kb-quickadd-context";
 try {
@@ -62,9 +63,9 @@ if (!selectedProject) {
     "选择 Project（最近使用优先）",
   );
 }
-const creationProjectName = selectedProject.name;
+
 const requestedTitle = await tp.system.prompt(
-  "请输入研究问题标题",
+  "请输入文档标题",
   "",
   true,
   false,
@@ -78,64 +79,23 @@ const safeTitle = requestedTitle
   .trim();
 
 if (!safeTitle) {
-  throw new Error("研究问题标题不能为空。");
+  throw new Error("文档标题不能为空。");
 }
 
-if (creationProjectName) {
-  const questionsFolder = `02 Projects/${creationProjectName}/Research Questions`;
-  const questionsIndex = `${questionsFolder}/Research Questions.md`;
-
-  if (!(await app.vault.adapter.exists(questionsFolder))) {
-    await app.vault.createFolder(questionsFolder);
-  }
-
-  if (!(await app.vault.adapter.exists(questionsIndex))) {
-    const sectionTemplate = await app.vault.adapter.read("99 Templates/Project Section.md");
-    await app.vault.create(questionsIndex, sectionTemplate);
-  }
-
-  const sequencePattern = /RQ(\d+)(?:[-\s_].*)?$/i;
-  const maxSequence = app.vault
-    .getMarkdownFiles()
-    .filter((file) => file.parent?.path === questionsFolder)
-    .reduce((max, file) => {
-      const match = file.basename.match(sequencePattern);
-      return match ? Math.max(max, Number(match[1])) : max;
-    }, 0);
-
-  let nextSequence = maxSequence + 1;
-  let targetName = `RQ${nextSequence}-${safeTitle}`;
-  while (await app.vault.adapter.exists(`${questionsFolder}/${targetName}.md`)) {
-    nextSequence += 1;
-    targetName = `RQ${nextSequence}-${safeTitle}`;
-  }
-  await tp.file.move(`${questionsFolder}/${targetName}`);
+const docsFolder = `${selectedProject.folder}/Docs`;
+if (!(await app.vault.adapter.exists(docsFolder))) {
+  await app.vault.createFolder(docsFolder);
 }
+
+let targetName = safeTitle;
+let suffix = 2;
+while (await app.vault.adapter.exists(`${docsFolder}/${targetName}.md`)) {
+  targetName = `${safeTitle}-${suffix}`;
+  suffix += 1;
+}
+
+await tp.file.move(`${docsFolder}/${targetName}`);
+const documentTitle = targetName;
 -%>
----
-type: research-question
-created: <% tp.date.now("YYYY-MM-DD") %>
-updated: <% tp.date.now("YYYY-MM-DD") %>
-project: <%*
-const pathParts = tp.file.folder(true).split("/");
-const projectsRootIndex = pathParts.indexOf("02 Projects");
-const projectName = projectsRootIndex >= 0 ? pathParts[projectsRootIndex + 1] : "";
+# <% documentTitle %>
 
-if (projectName && projectName !== "_Shared") {
-  const projectPath = `02 Projects/${projectName}/${projectName}`;
-  tR += JSON.stringify(`[[${projectPath}]]`);
-}
-%>
-tags:
-  - research-question
----
-
-## 相关 Ideas
-
-```dataview
-TABLE status AS "状态", parent_idea AS "父想法", dateformat(file.mtime, "MM/dd HH:mm") AS "更新"
-FROM "02 Projects"
-WHERE type = "idea"
-  AND contains(research_questions, this.file.link)
-SORT file.mtime DESC
-```

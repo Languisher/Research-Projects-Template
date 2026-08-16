@@ -1,4 +1,132 @@
 const current = dv.current().file;
+const quickAddContextKey = "project-kb-quickadd-context";
+const isProjectPage = dv.current().type === "project";
+
+const createChoices = [
+  ...(isProjectPage
+    ? [
+        {
+          label: "Research Question",
+          commandId: "quickadd:choice:f1c3c792-2e1f-4ac8-8b1e-0bbd01af6c91",
+        },
+        {
+          label: "Idea",
+          commandId: "quickadd:choice:89d4178b-4b93-4b80-8216-2ab95bfd283f",
+        },
+        {
+          label: "Experiment",
+          commandId: "quickadd:choice:eae0ac42-3e58-453e-acab-1fefba8bc0fd",
+        },
+      ]
+    : []),
+  {
+    label: "普通文档",
+    kind: "document",
+  },
+];
+
+const header = dv.container.createDiv({ cls: "project-files-header" });
+header.createEl("h2", { text: "Project Files" });
+const addButton = header.createEl("button", {
+  text: "+",
+  cls: "project-files-add-button clickable-icon",
+  attr: {
+    "aria-label": "添加文件",
+    title: "添加文件",
+  },
+});
+
+async function createProjectDocument(quickAddApi) {
+  const docsFolder = `${current.folder}/Docs`;
+  if (!app.vault.getAbstractFileByPath(docsFolder)) {
+    await app.vault.createFolder(docsFolder);
+  }
+
+  const targetFolders = app.vault
+    .getAllLoadedFiles()
+    .filter(
+      (file) =>
+        Array.isArray(file.children) &&
+        (file.path === docsFolder || file.path.startsWith(`${docsFolder}/`)),
+    )
+    .sort((left, right) =>
+      left.path.localeCompare(right.path, "zh-CN", {
+        numeric: true,
+        sensitivity: "base",
+      })
+    );
+  let targetFolder = docsFolder;
+  if (targetFolders.length > 1) {
+    targetFolder = await quickAddApi.suggester(
+      targetFolders.map((folder) =>
+        folder.path === docsFolder
+          ? "Docs/"
+          : `Docs/${folder.path.substring(docsFolder.length + 1)}/`
+      ),
+      targetFolders.map((folder) => folder.path),
+      "选择普通文档的保存位置",
+    );
+    if (!targetFolder) return;
+  }
+
+  const requestedTitle = await quickAddApi.inputPrompt("请输入文档标题");
+  if (requestedTitle === null || requestedTitle === undefined) return;
+  const safeTitle = requestedTitle
+    .trim()
+    .replace(/[\\/:*?"<>|]/g, " ")
+    .replace(/\s+/g, " ")
+    .trim()
+    .slice(0, 100)
+    .trim();
+  if (!safeTitle) return;
+
+  let targetName = safeTitle;
+  let suffix = 2;
+  while (app.vault.getAbstractFileByPath(`${targetFolder}/${targetName}.md`)) {
+    targetName = `${safeTitle}-${suffix}`;
+    suffix += 1;
+  }
+
+  const file = await app.vault.create(
+    `${targetFolder}/${targetName}.md`,
+    `# ${targetName}\n`,
+  );
+  await app.workspace.getLeaf("tab").openFile(file);
+}
+
+addButton.addEventListener("click", async () => {
+  const quickAddApi = app.plugins.plugins.quickadd?.api;
+  if (!quickAddApi?.suggester) {
+    addButton.setAttr("title", "QuickAdd 尚未启用");
+    return;
+  }
+
+  try {
+    const selected = await quickAddApi.suggester(
+      createChoices.map((choice) => choice.label),
+      createChoices,
+    );
+    if (!selected) return;
+
+    if (selected.kind === "document") {
+      await createProjectDocument(quickAddApi);
+      return;
+    }
+
+    sessionStorage.setItem(
+      quickAddContextKey,
+      JSON.stringify({ projectPath: current.path, createdAt: Date.now() }),
+    );
+    const executed = app.commands.executeCommandById(selected.commandId);
+    if (!executed) {
+      sessionStorage.removeItem(quickAddContextKey);
+      addButton.setAttr("title", "对应的 QuickAdd 命令尚未加载");
+    }
+  } catch (error) {
+    sessionStorage.removeItem(quickAddContextKey);
+    console.debug("Project 文件创建已取消。", error);
+  }
+});
 
 function normalizePath(value) {
   if (!value) return null;
@@ -31,8 +159,8 @@ function linkedPaths(value) {
 }
 
 function identityFor(page) {
-  if (page.file.name === "Proposal") {
-    return { identifier: "DOC", title: "Proposal" };
+  if (!page.type) {
+    return { identifier: "DOC", title: page.file.name };
   }
 
   const prefixByType = {
@@ -91,6 +219,181 @@ function renderRow(tree, page, depth, ancestorIsLast = [], isLast = true) {
     text: page.file.mtime.toFormat("MM-dd HH:mm"),
     cls: "project-research-tree-time",
   });
+  return row;
+}
+
+function renderSectionLabel(container, label) {
+  const section = container.createDiv({ cls: "project-files-section-label" });
+  section.createSpan({ text: label });
+  section.createSpan({ cls: "project-files-section-line" });
+}
+
+function descendantDocumentCount(folderNode) {
+  return folderNode.children.reduce(
+    (count, child) =>
+      count + (child.kind === "document" ? 1 : descendantDocumentCount(child)),
+    0,
+  );
+}
+
+let draggedDocumentOrder = null;
+
+async function persistDocumentSiblingOrder(parentOrderKey, siblingOrder) {
+  const projectFile = app.vault.getAbstractFileByPath(current.path);
+  if (!projectFile) return;
+
+  const siblingKeys = new Set(
+    documentSiblingsByParent.get(parentOrderKey) || [],
+  );
+  await app.fileManager.processFrontMatter(projectFile, (frontmatter) => {
+    const existing = Array.isArray(frontmatter.doc_order)
+      ? frontmatter.doc_order.map(String)
+      : frontmatter.doc_order
+        ? [String(frontmatter.doc_order)]
+        : [];
+    frontmatter.doc_order = [
+      ...existing.filter((path) => !siblingKeys.has(path)),
+      ...siblingOrder,
+    ];
+  });
+  documentSiblingsByParent.set(parentOrderKey, siblingOrder);
+}
+
+function makeDocumentRowDraggable(row, node, parentOrderKey) {
+  row.setAttr("draggable", "true");
+  row.setAttr("title", "拖动以调整同一文件夹内的显示顺序");
+  row.addClass("project-doc-order-row");
+
+  row.addEventListener("dragstart", (event) => {
+    draggedDocumentOrder = { key: node.orderKey, parentOrderKey };
+    event.dataTransfer.effectAllowed = "move";
+    event.dataTransfer.setData("text/plain", node.orderKey);
+    row.addClass("is-dragging");
+  });
+
+  row.addEventListener("dragend", () => {
+    draggedDocumentOrder = null;
+    row.removeClass("is-dragging");
+    row.removeClass("is-drop-before");
+    row.removeClass("is-drop-after");
+  });
+
+  row.addEventListener("dragover", (event) => {
+    if (
+      !draggedDocumentOrder ||
+      draggedDocumentOrder.parentOrderKey !== parentOrderKey ||
+      draggedDocumentOrder.key === node.orderKey
+    ) {
+      return;
+    }
+    event.preventDefault();
+    event.dataTransfer.dropEffect = "move";
+    const belowMiddle =
+      event.clientY > row.getBoundingClientRect().top + row.offsetHeight / 2;
+    row.toggleClass("is-drop-before", !belowMiddle);
+    row.toggleClass("is-drop-after", belowMiddle);
+  });
+
+  row.addEventListener("dragleave", () => {
+    row.removeClass("is-drop-before");
+    row.removeClass("is-drop-after");
+  });
+
+  row.addEventListener("drop", async (event) => {
+    event.preventDefault();
+    row.removeClass("is-drop-before");
+    row.removeClass("is-drop-after");
+
+    if (
+      !draggedDocumentOrder ||
+      draggedDocumentOrder.parentOrderKey !== parentOrderKey ||
+      draggedDocumentOrder.key === node.orderKey
+    ) {
+      return;
+    }
+
+    const currentOrder = [
+      ...(documentSiblingsByParent.get(parentOrderKey) || []),
+    ];
+    const sourceKey = draggedDocumentOrder.key;
+    const reordered = currentOrder.filter((key) => key !== sourceKey);
+    let targetIndex = reordered.indexOf(node.orderKey);
+    if (targetIndex < 0) return;
+    const belowMiddle =
+      event.clientY > row.getBoundingClientRect().top + row.offsetHeight / 2;
+    if (belowMiddle) targetIndex += 1;
+    reordered.splice(targetIndex, 0, sourceKey);
+    await persistDocumentSiblingOrder(parentOrderKey, reordered);
+  });
+}
+
+function renderDocumentNode(
+  container,
+  node,
+  depth,
+  ancestorIsLast = [],
+  isLast = true,
+  parentOrderKey = "Docs",
+) {
+  if (node.kind === "document") {
+    const row = renderRow(container, node.page, depth, ancestorIsLast, isLast);
+    makeDocumentRowDraggable(row, node, parentOrderKey);
+    return;
+  }
+
+  const group = container.createDiv({ cls: "project-doc-folder-group" });
+  const row = group.createDiv({
+    cls: `project-research-tree-row project-doc-folder-row project-research-tree-depth-${depth}`,
+  });
+  if (depth > 0) {
+    row.createSpan({
+      text: prefixFor(ancestorIsLast, isLast),
+      cls: "project-research-tree-prefix",
+    });
+  }
+  row.createSpan({ text: "DIR", cls: "project-research-tree-id" });
+  const toggle = row.createEl("button", {
+    text: node.name,
+    cls: "project-doc-folder-toggle",
+  });
+  row.createSpan({ cls: "project-research-tree-leader" });
+  row.createSpan({
+    text: `${descendantDocumentCount(node)} 文档`,
+    cls: "project-research-tree-time",
+  });
+  makeDocumentRowDraggable(row, node, parentOrderKey);
+
+  const children = group.createDiv({ cls: "project-doc-folder-children" });
+  const collapseKey = `project-doc-folder:${node.path}`;
+  let collapsed = sessionStorage.getItem(collapseKey) === "collapsed";
+  const updateCollapsedState = () => {
+    group.toggleClass("is-collapsed", collapsed);
+    toggle.setAttr("aria-expanded", String(!collapsed));
+    toggle.setAttr("title", collapsed ? "展开文件夹" : "收起文件夹");
+  };
+  updateCollapsedState();
+
+  toggle.addEventListener("click", () => {
+    collapsed = !collapsed;
+    if (collapsed) {
+      sessionStorage.setItem(collapseKey, "collapsed");
+    } else {
+      sessionStorage.removeItem(collapseKey);
+    }
+    updateCollapsedState();
+  });
+
+  const nextAncestors = [...ancestorIsLast, isLast];
+  node.children.forEach((child, index) => {
+    renderDocumentNode(
+      children,
+      child,
+      depth + 1,
+      nextAncestors,
+      index === node.children.length - 1,
+      node.orderKey,
+    );
+  });
 }
 
 function renderWarningRow(container, page, reasons) {
@@ -111,8 +414,16 @@ function renderWarningRow(container, page, reasons) {
 }
 
 const projectPath = normalizePath(current.path);
-const proposal = dv.page(`${current.folder}/Proposal`);
-const pages = Array.from(dv.pages('"02 Projects"'));
+const docsFolder = `${current.folder}/Docs`;
+const proposal = isProjectPage ? dv.page(`${docsFolder}/Proposal`) : null;
+const folderPages = Array.from(dv.pages(`"${current.folder}"`));
+const pages = isProjectPage ? Array.from(dv.pages('"02 Projects"')) : [];
+const documents = folderPages.filter(
+  (page) =>
+    page.file.path.startsWith(`${docsFolder}/`) &&
+    page.file.path !== `${docsFolder}/Proposal.md` &&
+    !page.type,
+);
 const inCurrentProject = (page) => normalizePath(page.project) === projectPath;
 const questions = pages.filter(
   (page) => page.type === "research-question" && inCurrentProject(page),
@@ -130,10 +441,91 @@ const collator = new Intl.Collator("zh-CN", {
 });
 const sortPages = (left, right) =>
   collator.compare(left.file.name, right.file.name);
+const configuredDocOrder = Array.from(asArray(dv.current().doc_order))
+  .map((value) => String(value).trim())
+  .filter(Boolean);
+const configuredDocOrderIndex = new Map(
+  configuredDocOrder.map((path, index) => [path, index]),
+);
+const documentSiblingsByParent = new Map();
+
+function projectRelativePath(path) {
+  return path.substring(current.folder.length + 1);
+}
+
+function buildDocumentTree(documentPages) {
+  const root = {
+    kind: "folder",
+    name: "Docs",
+    path: docsFolder,
+    orderKey: "Docs",
+    children: [],
+    folders: new Map(),
+  };
+
+  for (const page of documentPages) {
+    const relativePath = page.file.path.substring(docsFolder.length + 1);
+    const segments = relativePath.split("/");
+    let parent = root;
+    let folderPath = docsFolder;
+
+    for (const folderName of segments.slice(0, -1)) {
+      folderPath = `${folderPath}/${folderName}`;
+      if (!parent.folders.has(folderName)) {
+        const folderNode = {
+          kind: "folder",
+          name: folderName,
+          path: folderPath,
+          orderKey: projectRelativePath(folderPath),
+          children: [],
+          folders: new Map(),
+        };
+        parent.folders.set(folderName, folderNode);
+        parent.children.push(folderNode);
+      }
+      parent = parent.folders.get(folderName);
+    }
+
+    parent.children.push({
+      kind: "document",
+      page,
+      orderKey: projectRelativePath(page.file.path),
+    });
+  }
+
+  const sortChildren = (folderNode) => {
+    folderNode.children.sort((left, right) => {
+      const leftOrder = configuredDocOrderIndex.get(left.orderKey);
+      const rightOrder = configuredDocOrderIndex.get(right.orderKey);
+      if (leftOrder !== undefined || rightOrder !== undefined) {
+        if (leftOrder === undefined) return 1;
+        if (rightOrder === undefined) return -1;
+        if (leftOrder !== rightOrder) return leftOrder - rightOrder;
+      }
+      const leftName = left.kind === "folder" ? left.name : left.page.file.name;
+      const rightName = right.kind === "folder" ? right.name : right.page.file.name;
+      return (
+        collator.compare(leftName, rightName) ||
+        (left.kind === right.kind ? 0 : left.kind === "folder" ? -1 : 1)
+      );
+    });
+    documentSiblingsByParent.set(
+      folderNode.orderKey,
+      folderNode.children.map((child) => child.orderKey),
+    );
+    for (const child of folderNode.children) {
+      if (child.kind === "folder") sortChildren(child);
+    }
+  };
+  sortChildren(root);
+  return root;
+}
 
 questions.sort(sortPages);
 ideas.sort(sortPages);
 experiments.sort(sortPages);
+documents.sort(sortPages);
+const documentTree = buildDocumentTree(documents);
 
 const questionsByPath = new Map(
   questions.map((page) => [normalizePath(page.file.path), page]),
@@ -280,10 +672,38 @@ for (const relatedExperiments of experimentsByIdea.values()) {
   relatedExperiments.sort(sortPages);
 }
 
-const tree = dv.container.createDiv({ cls: "project-research-tree" });
+const tree = dv.container.createDiv({
+  cls: "project-research-tree project-files-tree",
+});
+
+const docsGroup = tree.createDiv({
+  cls: "project-files-group project-files-docs-group",
+});
+
+renderSectionLabel(docsGroup, "DOCS");
 
 if (proposal) {
-  renderRow(tree, proposal, 0);
+  renderRow(docsGroup, proposal, 0);
+}
+
+documentTree.children.forEach((node, index) => {
+  renderDocumentNode(
+    docsGroup,
+    node,
+    0,
+    [],
+    index === documentTree.children.length - 1,
+  );
+});
+
+const researchGroup = isProjectPage
+  ? tree.createDiv({
+      cls: "project-files-group project-files-research-group",
+    })
+  : null;
+
+if (researchGroup) {
+  renderSectionLabel(researchGroup, "RESEARCH · RQ → IDEA → EXP");
 }
 
 function renderIdea(
@@ -301,7 +721,7 @@ function renderIdea(
   if (rendered.has(ideaPath)) return;
   rendered.add(ideaPath);
 
-  renderRow(tree, idea, depth, ancestorIsLast, isLast);
+  renderRow(researchGroup, idea, depth, ancestorIsLast, isLast);
 
   const nextAncestry = new Set(ancestry);
   nextAncestry.add(ideaPath);
@@ -318,7 +738,13 @@ function renderIdea(
   children.forEach((child, index) => {
     const childIsLast = index === children.length - 1;
     if (child.kind === "experiment") {
-      renderRow(tree, child.page, depth + 1, nextAncestors, childIsLast);
+      renderRow(
+        researchGroup,
+        child.page,
+        depth + 1,
+        nextAncestors,
+        childIsLast,
+      );
     } else {
       renderIdea(
         child.page,
@@ -335,7 +761,7 @@ function renderIdea(
 
 questions.forEach((question) => {
   const questionPath = normalizePath(question.file.path);
-  renderRow(tree, question, 0);
+  renderRow(researchGroup, question, 0);
 
   const questionIdeas = ideas.filter(
     (idea) =>
@@ -367,7 +793,7 @@ questions.forEach((question) => {
 });
 
 if (warnings.size > 0) {
-  const warningSection = tree.createDiv({
+  const warningSection = researchGroup.createDiv({
     cls: "project-research-tree-warning-section",
   });
   const warningEntries = Array.from(warnings.values()).sort((left, right) =>

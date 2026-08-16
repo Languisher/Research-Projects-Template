@@ -15,5 +15,6 @@
   "obsidian-latex-suite",
   "obsidian-linter",
   "metadata-menu",
-  "better-word-count"
+  "better-word-count",
+  "entity-assets-router"
 ]

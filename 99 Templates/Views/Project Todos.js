@@ -18,7 +18,9 @@ function normalizePath(value) {
 
 function asArray(value) {
   if (!value) return [];
-  if (Array.isArray(value)) return value;
+  // Dataview DataArray reports itself as an Array, but native flatMap does not
+  // reliably flatten it. Always materialize it as a plain Array first.
+  if (Array.isArray(value)) return Array.from(value);
   if (typeof value !== "string" && value[Symbol.iterator]) {
     return Array.from(value);
   }
@@ -92,9 +94,11 @@ const projectTasks = Array.from(dv.pages())
 
 const meetingTasks = [];
 const ambiguousMeetingTasks = [];
-const meetings = Array.from(dv.pages('"03 Meetings"')).filter(
-  (page) => page.type === "meeting",
-);
+const meetings = current.type === "project"
+  ? Array.from(dv.pages('"03 Meetings"')).filter(
+      (page) => page.type === "meeting",
+    )
+  : [];
 
 for (const meeting of meetings) {
   const meetingProjects = unique(linkedPaths(meeting.project));

@@ -34,11 +34,13 @@ Knowledge + Research Question + Idea status + Project state
 |---|---|
 | `00 Dashboard/` | 自动汇总、导航和工作流检查 |
 | `01 Inbox/` | 尚未分类的临时捕获 |
-| `02 Projects/<Project>/` | Project Folder Note 及其 Research Questions、Ideas、Knowledge、Experiments、Papers |
+| `02 Projects/<Project>/` | Project Folder Note 及其 assets、Docs、Research Questions、Ideas、Experiments、Papers |
+| `02 Projects/<Project>/Docs/` | Proposal 与其他无类型的普通项目文档 |
 | `02 Projects/_Shared/` | 跨项目或暂未确定唯一归属的研究材料 |
 | `03 Meetings/` | 独立的会议板块；集中保存会议记录与行动项，通过 `project` 字段关联 Project |
+| `04 Knowledge/<Knowledge>/` | Knowledge Folder Note、assets 及其普通知识文档 |
 | `08 Misc/` | 行政和生活琐事的背景、材料和跟进记录 |
-| `90 Assets/` | 图片、附件、Excalidraw 和 Zotero 资源 |
+| `90 Assets/` | Project 与 Knowledge 之外的通用附件，以及 Excalidraw 和 Zotero 资源 |
 | `99 Templates/` | 各类笔记模板，不作为研究结论来源 |
 
 ## 权威信息位置
@@ -72,6 +74,8 @@ Knowledge + Research Question + Idea status + Project state
 ⌘⇧E       New Experiment
 ⌘⇧I       New Idea
 ⌘⇧M       New Meeting
+⌘⇧P       New Project / Knowledge
+⌘⇧K       New Knowledge
 ⌘⇧A       Tasks: Create or edit task
 ⌘⇧O       Omnisearch
 ```
@@ -115,37 +119,48 @@ Project 首页和同名类型索引已经可以直接使用。若希望“点击
 |---|---|
 | `Inbox` | 追加到 `01 Inbox/Inbox.md` |
 | `Task` | 使用 Task 模板在 `08 Misc/` 创建独立任务笔记，由 Tasks Dashboard 汇总 |
-| `New Project` | 创建 `02 Projects/<Project>/<Project>.md` Folder Note 和无标签的 `Proposal.md` |
+| `New Project / Knowledge` | 先选择类型，再创建对应的同名文件夹、Folder Note 和 `assets/` |
 | `New Research Question` | 选择 Project 后创建到其 `Research Questions/` 子目录 |
 | `New Idea` | 选择 Project 及其 Research Question 后，自动创建到 `Ideas/` 子目录 |
 | `New Experiment` | 选择 Project 及其 Idea 后，自动创建到 `Experiments/` 子目录 |
+| `New Project Document` | 选择 Project 后创建无类型的普通文档到其 `Docs/` 子目录 |
 | `New Meeting` | 在 `03 Meetings/` 创建并以 `MEETING-` 开头命名；创建后手动填写 `project` 字段 |
-| `New Knowledge` | 选择 Project 的 `Knowledge/` 子目录后创建 |
+| `New Knowledge` | 在 `04 Knowledge/` 下创建独立的同名文件夹、Folder Note、`Docs/` 和 `assets/` |
 
 `New Research Question`、`New Idea` 和 `New Experiment` 在选择 Project 后，会分别提示输入研究问题标题、想法标题或实验标题。它们检查所属 Project 的对应目录，并以 `RQ<n>-标题`、`IDEA<n>-标题`、`EXP<n>-标题` 自动使用当前最大序号加一；日期不会写入最终文件名。
 
-`New Idea` 只显示所选 Project 内的 Research Question，并允许连续选择一个或多个，结果自动写入 `research_questions`。`New Experiment` 只显示所选 Project 内的 Idea，并将所选项自动写入 `idea`。如果 Project 内尚无对应的挂靠对象，命令会提示先创建 Research Question 或 Idea。
+`⌘⇧P` 打开 `New Project / Knowledge`，第一步选择创建 Project 或 Knowledge。`⌘⇧K` 直接进入 Knowledge 创建流程。Knowledge 与 Project 相互独立，创建 Knowledge 时不会要求选择任何归属，也不会自动写入 `parent`、`parent_type` 或 `project`。
 
-这三个命令的 Project 选择器只显示 `02 Projects/<Project>/` 这一层，不显示 `Ideas/`、`Research Questions/`、`Experiments/` 等子目录，也不受当前打开文件所在目录影响。列表按各 Project 内最近修改时间从新到旧排列。
+`New Idea` 只显示所选 Project 内的 Research Question，并允许连续选择一个或多个，结果自动写入 `research_questions`。`New Experiment` 只显示所选 Project 内的 Idea，并将所选项自动写入 `idea`；如果 Project 内还没有 Idea，则跳过选择并创建 `idea` 留空的 Experiment，之后可再补充关联。Project 内没有 Research Question 时，`New Idea` 会提示先创建一个。
+
+这些命令的 Project 选择器只显示 `02 Projects/<Project>/` 这一层，不显示 `Ideas/`、`Research Questions/`、`Experiments/` 等子目录。列表按各 Project 内最近修改时间从新到旧排列。在 Project 首页点击 Project Files 右侧的 `+` 时，可选择 Research Question、Idea、Experiment 或普通文档，并自动使用当前 Project，不再重复选择。创建普通文档时，如果 `Docs/` 已有子文件夹，还可以直接选择保存层级。
+
+Project Files 会将 DOC 与 `Research Question → Idea → Experiment` 关系树分组显示，并递归镜像 `Docs/` 下的文件夹结构；分组不渲染卡片式外框。可直接在 Obsidian Files 面板中移动、重命名文件和文件夹来调整父子关系；同一文件夹内默认按名称自然排序，也可以在 Project Files 中直接拖拽 DOC 或 DIR 手动排序。拖拽结果自动写入 Folder Note 的 `doc_order`，文件夹行可以点击展开或收起，Project 的 Proposal 始终固定在最前。
+
+Knowledge 首页与 Project 首页共用标题、关键词、To-dos 和 Project Files 样式及文档树交互，但只显示 `Docs/`，不包含甘特时间线、`Research Question → Idea → Experiment` 板块或 Meetings。Knowledge 的普通文档同样可在 Project Files 中创建、折叠和拖拽排序。
 
 Project 关系树直接从文件名中分离编号和文章标题，例如 `RQ1-标题` 会显示为编号徽标 `RQ1` 与标题“标题”。不另行维护 `title` 属性，因此重命名文件后展示会自动同步。
 
 可以在 Obsidian 设置中为这些命令分配快捷键。
 
-### 4. 创建第一个 Project
+### 4. 附件位置
 
-执行 `New Project`，例如创建：
+在 `02 Projects/<Project>/` 或 `04 Knowledge/<Knowledge>/` 内任意层级的笔记中粘贴、拖入或选择插入附件时，附件会自动保存到对应实体根目录的 `assets/`。Project 与 Knowledge 之外的笔记继续使用全局 `90 Assets/`；全局目录中已有的附件不会自动迁移。
+
+### 5. 创建第一个 Project
+
+执行 `New Project / Knowledge` 并选择 `Project`，例如创建：
 
 ```text
 LLM Inference Acceleration
 ```
 
-QuickAdd 会创建 `02 Projects/LLM Inference Acceleration/LLM Inference Acceleration.md` 和无标签的 `Proposal.md`，并自动建立 `Research Questions/`、`Ideas/` 和 `Experiments/` 及其同名 Folder Note。Knowledge 和 Papers 按需放入对应子目录；会议统一放入 `03 Meetings/`，跨项目研究材料放入 `_Shared`，不要复制成多份。`Proposal.md` 始终显示在 Project 首页的 Project Files 顶端。
+QuickAdd 会创建 `02 Projects/LLM Inference Acceleration/LLM Inference Acceleration.md` 和无标签的 `Docs/Proposal.md`，并自动建立 `assets/`、`Docs/`、`Research Questions/`、`Ideas/` 和 `Experiments/`；后三个类型目录还会包含同名 Folder Note。Papers 按需放入对应 Project 子目录；Knowledge 独立创建在 `04 Knowledge/`；会议统一放入 `03 Meetings/`，跨项目研究材料放入 `_Shared`，不要复制成多份。`Docs/Proposal.md` 始终显示在 Project 首页的 Project Files 顶端。
 
 首先只填写：
 
-- `Proposal.md` 中的 Background & Problem
-- `Proposal.md` 中的 Goal
+- `Docs/Proposal.md` 中的 Background & Problem
+- `Docs/Proposal.md` 中的 Goal
 - 独立的 Research Question 文档
 - 与这些问题关联的 Ideas
 
@@ -450,11 +465,12 @@ Task 的单项状态也限定为四种：待办（`[ ]`）、进行中（`[/]`�
 Zotero Paper 是例外：文件名保持 citekey，YAML `title` 用于查询，正文保留可读的 `# 论文标题`。README 和 AGENTS 等需要脱离 Obsidian 独立阅读的仓库文档也保留一级标题。
 
 - Project：`02 Projects/项目名称/项目名称.md`（文件夹和 Folder Note 同名）
-- Proposal：`02 Projects/项目名称/Proposal.md`（无 tag）
+- Proposal：`02 Projects/项目名称/Docs/Proposal.md`（无 tag）
+- 普通项目文档：`02 Projects/项目名称/Docs/文档标题.md`（无 `type`）
 - Idea：`IDEA-YYYYMMDD-简短标题.md`
 - Experiment：`EXP-YYYYMMDD-简短标题.md`
 - Meeting：`03 Meetings/MEETING-YYYY-MM-DD-会议主题.md`
-- Knowledge：直接使用清晰、可搜索的概念或结论作为标题
+- Knowledge：`04 Knowledge/知识标题/知识标题.md`（文件夹和 Folder Note 同名）
 - Paper：保持 Zotero citekey 生成的文件名
 
 ## 一个完整例子

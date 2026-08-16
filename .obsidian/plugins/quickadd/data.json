@@ -173,34 +173,74 @@
     },
     {
       "id": "285eafcb-1212-43e9-ae07-ea6bf4a51a03",
-      "name": "New Project",
-      "type": "Template",
+      "name": "New Project / Knowledge",
+      "type": "Multi",
       "command": true,
-      "templatePath": "99 Templates/Project.md",
-      "fileNameFormat": {
-        "enabled": true,
-        "format": "{{VALUE:title}}/{{VALUE:title}}"
-      },
-      "folder": {
-        "enabled": true,
-        "folders": [
-          "02 Projects"
-        ],
-        "chooseWhenCreatingNote": false,
-        "createInSameFolderAsActiveFile": false,
-        "chooseFromSubfolders": false
-      },
-      "appendLink": false,
-      "openFile": true,
-      "fileOpening": {
-        "location": "tab",
-        "direction": "vertical",
-        "mode": "default",
-        "focus": true
-      },
-      "fileExistsBehavior": {
-        "kind": "prompt"
-      }
+      "placeholder": "选择要创建的类型",
+      "choices": [
+        {
+          "id": "f979679b-0964-4933-b11e-f6e82c24258c",
+          "name": "Project",
+          "type": "Template",
+          "command": false,
+          "templatePath": "99 Templates/Project.md",
+          "fileNameFormat": {
+            "enabled": true,
+            "format": "{{VALUE:title}}/{{VALUE:title}}"
+          },
+          "folder": {
+            "enabled": true,
+            "folders": [
+              "02 Projects"
+            ],
+            "chooseWhenCreatingNote": false,
+            "createInSameFolderAsActiveFile": false,
+            "chooseFromSubfolders": false
+          },
+          "appendLink": false,
+          "openFile": true,
+          "fileOpening": {
+            "location": "tab",
+            "direction": "vertical",
+            "mode": "default",
+            "focus": true
+          },
+          "fileExistsBehavior": {
+            "kind": "prompt"
+          }
+        },
+        {
+          "id": "32c5e24a-89fb-496c-af0a-59f48f4efcbf",
+          "name": "Knowledge",
+          "type": "Template",
+          "command": false,
+          "templatePath": "99 Templates/Knowledge.md",
+          "fileNameFormat": {
+            "enabled": true,
+            "format": "{{VALUE:title}}/{{VALUE:title}}"
+          },
+          "folder": {
+            "enabled": true,
+            "folders": [
+              "04 Knowledge"
+            ],
+            "chooseWhenCreatingNote": false,
+            "createInSameFolderAsActiveFile": false,
+            "chooseFromSubfolders": false
+          },
+          "appendLink": false,
+          "openFile": true,
+          "fileOpening": {
+            "location": "tab",
+            "direction": "vertical",
+            "mode": "default",
+            "focus": true
+          },
+          "fileExistsBehavior": {
+            "kind": "prompt"
+          }
+        }
+      ]
     },
     {
       "id": "eae0ac42-3e58-453e-acab-1fefba8bc0fd",
@@ -241,16 +281,47 @@
       "templatePath": "99 Templates/Knowledge.md",
       "fileNameFormat": {
         "enabled": true,
-        "format": "{{VALUE:title}}"
+        "format": "{{VALUE:title}}/{{VALUE:title}}"
+      },
+      "folder": {
+        "enabled": true,
+        "folders": [
+          "04 Knowledge"
+        ],
+        "chooseWhenCreatingNote": false,
+        "createInSameFolderAsActiveFile": false,
+        "chooseFromSubfolders": false
+      },
+      "appendLink": false,
+      "openFile": true,
+      "fileOpening": {
+        "location": "tab",
+        "direction": "vertical",
+        "mode": "default",
+        "focus": true
+      },
+      "fileExistsBehavior": {
+        "kind": "prompt"
+      }
+    },
+    {
+      "id": "d3e0f2b6-11e7-4c1f-a14c-0e5c2fdb798a",
+      "name": "New Project Document",
+      "type": "Template",
+      "command": true,
+      "templatePath": "99 Templates/Project Document.md",
+      "fileNameFormat": {
+        "enabled": true,
+        "format": "__DOC-{{DATE:x}}"
       },
       "folder": {
         "enabled": true,
         "folders": [
           "02 Projects"
         ],
-        "chooseWhenCreatingNote": true,
+        "chooseWhenCreatingNote": false,
         "createInSameFolderAsActiveFile": false,
-        "chooseFromSubfolders": true
+        "chooseFromSubfolders": false
       },
       "appendLink": false,
       "openFile": true,

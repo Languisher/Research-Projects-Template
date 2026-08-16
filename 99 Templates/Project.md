@@ -12,13 +12,23 @@ tags:
 ---
 <%*
 const projectFolder = tp.file.folder(true);
+const docsFolder = `${projectFolder}/Docs`;
+const assetsFolder = `${projectFolder}/assets`;
 const ideasFolder = `${projectFolder}/Ideas`;
 const ideasIndex = `${ideasFolder}/Ideas.md`;
 const questionsFolder = `${projectFolder}/Research Questions`;
 const questionsIndex = `${questionsFolder}/Research Questions.md`;
 const experimentsFolder = `${projectFolder}/Experiments`;
 const experimentsIndex = `${experimentsFolder}/Experiments.md`;
-const proposalPath = `${projectFolder}/Proposal.md`;
+const proposalPath = `${docsFolder}/Proposal.md`;
+
+if (!(await app.vault.adapter.exists(assetsFolder))) {
+  await app.vault.createFolder(assetsFolder);
+}
+
+if (!(await app.vault.adapter.exists(docsFolder))) {
+  await app.vault.createFolder(docsFolder);
+}
 
 if (!(await app.vault.adapter.exists(proposalPath))) {
   const proposalTemplate = await app.vault.adapter.read("99 Templates/Proposal.md");
@@ -71,8 +81,6 @@ gantt
 ```dataviewjs
 await dv.view("99 Templates/Views/Project Todos");
 ```
-
-## Project Files
 
 ```dataviewjs
 await dv.view("99 Templates/Views/Project Research Tree");
