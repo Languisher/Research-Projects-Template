@@ -91,3 +91,10 @@ await dv.view("99 Templates/Views/Project Research Tree");
 ```dataviewjs
 await dv.view("99 Templates/Views/Project Meetings");
 ```
+
+<%*
+const repositoryHelper = { exports: {} };
+const repositoryHelperSource = await app.vault.adapter.read("99 Templates/Scripts/Project Repository.js");
+new Function("module", "require", repositoryHelperSource)(repositoryHelper, typeof require === "function" ? require : undefined);
+await repositoryHelper.exports({ app, tp });
+-%>

@@ -150,3 +150,15 @@ Project 或 Knowledge 的子页顶部使用 `99 Templates/Views/Entity Navigatio
 - 检查 Meeting 中的重要决定是否已经同步到 Project。
 - 使用 `git diff --check` 检查格式问题。
 - 汇报新增或修改了哪些笔记，以及知识之间建立了哪些链接。
+
+## Project 独立仓库规则
+
+- 每个 `02 Projects/<Project>/` 直接子目录使用独立、私有的 GitHub 仓库；英文仓库名统一为 `<English-name>-Proposal`，默认分支为 `main`。
+- Obsidian 显示名称可保留中文与空格；仓库英文名与项目路径的映射统一维护在 `project-repositories.json`。新建中文项目时提示英文名称，禁止不同项目映射到同一仓库。
+- Vault 通过 Git submodule 引用项目；`.gitmodules` 记录路径、URL 和 `main`，Vault commit 固定子仓库 commit。`_Shared`、Dashboard、Knowledge、论文、模板与 `.obsidian` 由外层仓库管理。
+- `New Project / Knowledge → Project` 完成目录和笔记创建后自动连接仓库。只在新建/首次连接时提交初始项目内容并推送；已连接项目的后续编辑不自动提交。Knowledge 不创建 Proposal 仓库。
+- Project Folder Note 使用 `repository` 字段记录 GitHub 地址。离线、移动端、未登录或连接失败时保留笔记和仓库地址；桌面端使用 QuickAdd `Connect Project Repository` 或 `python3 tools/project_repositories.py sync` 补办。
+- 现有仓库仅在本地内容相同或能够证实为上游历史版本时自动导入；内容分歧必须停止并保留双方，不覆盖本地笔记。迁移前将原始项目目录保存到被 Git 忽略的 `.project-repo-backups/`。
+- 项目内容先提交、推送到其 Proposal 仓库，再更新并提交 Vault 的子模块指针。已有 Developer checkout 仍为另一份 Git 副本，通过 push/pull 同步；子模块不会自动跟随远端 main。
+- 克隆 Vault 使用 `git clone --recurse-submodules <vault-url>`；已有 Vault 可运行 `git submodule update --init --recursive` 恢复固定版本。切换或更新子仓库前先检查未提交修改。
+- 操作 Vault 时禁止把私有项目笔记加入外层公开仓库；只记录子模块引用。不要因项目迁移提交其他未完成的 Vault 修改。

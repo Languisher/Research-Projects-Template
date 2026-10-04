@@ -2,3 +2,35 @@
 	path = 02 Projects/RevFix
 	url = git@github.com:Languisher/RevFix-Proposal.git
 	branch = main
+[submodule "SeeR-Proposal"]
+	path = 02 Projects/SeeR
+	url = https://github.com/Languisher/SeeR-Proposal.git
+	branch = main
+[submodule "Agent-Infra-Proposal"]
+	path = 02 Projects/Agent-Infra 方向探索
+	url = https://github.com/Languisher/Agent-Infra-Proposal.git
+	branch = main
+[submodule "AgentInferDoctor-Proposal"]
+	path = 02 Projects/AgentInferDoctor
+	url = https://github.com/Languisher/AgentInferDoctor-Proposal.git
+	branch = main
+[submodule "GPU-TEE-LLM-Attack-Evaluation-Proposal"]
+	path = 02 Projects/GPU TEE 环境下 LLM 聊天机器人攻击评估
+	url = https://github.com/Languisher/GPU-TEE-LLM-Attack-Evaluation-Proposal.git
+	branch = main
+[submodule "HeteroCCL-Proposal"]
+	path = 02 Projects/HeteroCCL
+	url = https://github.com/Languisher/HeteroCCL-Proposal.git
+	branch = main
+[submodule "Revati-based-Research-Proposal"]
+	path = 02 Projects/Revati-based Research
+	url = https://github.com/Languisher/Revati-based-Research-Proposal.git
+	branch = main
+[submodule "ExpertWeave-Proposal"]
+	path = 02 Projects/ExpertWeave
+	url = https://github.com/Languisher/ExpertWeave-Proposal.git
+	branch = main
+[submodule "Inference-Engine-PR-AutoFix-Proposal"]
+	path = 02 Projects/推理引擎 PR 自动修复机
+	url = https://github.com/Languisher/Inference-Engine-PR-AutoFix-Proposal.git
+	branch = main

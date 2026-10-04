@@ -1,1 +1,5 @@
 .obsidian/workspace.json
+.project-repo-backups/
+project-repositories.json.tmp
+.DS_Store
+__pycache__/

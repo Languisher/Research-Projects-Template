@@ -323,6 +323,26 @@
           }
         ]
       }
+    },
+    {
+      "id": "854d8377-0cfb-4c75-9a79-43265b5b44d5",
+      "name": "Connect Project Repository",
+      "type": "Macro",
+      "command": true,
+      "runOnStartup": false,
+      "macro": {
+        "name": "Connect Project Repository",
+        "id": "975b4c14-9418-49a8-85b0-c9cfb83cf1ad",
+        "commands": [
+          {
+            "name": "Connect Project Repository",
+            "type": "UserScript",
+            "id": "1e80b8a0-d241-473f-bfbe-ce84d8cdff28",
+            "path": "99 Templates/Scripts/Connect Project Repository.js",
+            "settings": {}
+          }
+        ]
+      }
     }
   ],
   "inputPrompt": "single-line",

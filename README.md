@@ -506,3 +506,37 @@ Paper ↔ Knowledge ↔ Idea ↔ Experiment ↔ Project
 - 大文件、模型、数据集和完整实验产物不要提交到本仓库。
 
 仓库级 AI/Codex 行为约定见 `AGENTS.md`。
+
+## 每个 Project 一个 XX-Proposal 仓库
+
+每个 `02 Projects/<Project>/` 项目是独立私有仓库，通过 Git submodule 纳入 Vault。项目显示名称保持不变；英文仓库名统一以 `-Proposal` 结尾，分支为 `main`。映射见 `project-repositories.json`。
+
+### 新建项目
+
+继续使用 `⌘⇧P → Project`。模板创建默认目录和项目笔记后，自动创建/连接私有仓库，提交初始内容并注册子模块。中文名称会额外询问英文仓库名。需要桌面端安装 Git、Python 3.9+、GitHub CLI，并使用 `gh auth login` 登录有仓库创建权限的账户。
+
+离线、移动端或连接失败时，项目笔记和 `repository` 地址会保留。回到已登录的桌面端，运行 QuickAdd `Connect Project Repository` 选择项目补办；也可以在 Vault 根目录执行：
+
+```bash
+python3 tools/project_repositories.py sync
+python3 tools/project_repositories.py status
+```
+
+单独连接项目可使用 `python3 tools/project_repositories.py ensure "项目名" --repo English-Name-Proposal`。`sync` 只连接尚未注册的项目，不会提交已连接项目的后续笔记修改。迁移前的原始目录备份保存在 `.project-repo-backups/`，不推送到 GitHub。
+
+### 后续编辑与同步
+
+项目内容在各自仓库提交和推送，Vault 再记录新版本，例如：
+
+```bash
+git -C "02 Projects/RevFix" add .
+git -C "02 Projects/RevFix" commit -m "docs: update research notes"
+git -C "02 Projects/RevFix" push
+git add "02 Projects/RevFix"
+git commit -m "chore: update RevFix project reference"
+git push
+```
+
+在其他设备恢复固定的项目版本，使用 `git clone --recurse-submodules <Vault仓库地址>`，或在已有 Vault 内使用 `git submodule update --init --recursive`。子模块固定 commit，不会随远端 `main` 自动变化；另一个 Developer checkout 需要通过 Git 同步。模板、Dashboard、论文和跨项目知识继续由 Vault 提供，单独克隆 Proposal 仓库不会附带这些共享资源。
+
+当前桌面自动连接脚本支持 macOS/Linux；移动端可以正常创建笔记，仓库创建由桌面补办。

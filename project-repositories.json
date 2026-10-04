@@ -1,0 +1,18 @@
+{
+  "version": 1,
+  "owner": "Languisher",
+  "suffix": "-Proposal",
+  "visibility": "private",
+  "branch": "main",
+  "projects": {
+    "Agent-Infra 方向探索": "Agent-Infra-Proposal",
+    "AgentInferDoctor": "AgentInferDoctor-Proposal",
+    "ExpertWeave": "ExpertWeave-Proposal",
+    "GPU TEE 环境下 LLM 聊天机器人攻击评估": "GPU-TEE-LLM-Attack-Evaluation-Proposal",
+    "HeteroCCL": "HeteroCCL-Proposal",
+    "RevFix": "RevFix-Proposal",
+    "Revati-based Research": "Revati-based-Research-Proposal",
+    "SeeR": "SeeR-Proposal",
+    "推理引擎 PR 自动修复机": "Inference-Engine-PR-AutoFix-Proposal"
+  }
+}
