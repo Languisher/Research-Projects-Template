@@ -71,9 +71,9 @@ class ProjectRepositoriesTests(unittest.TestCase):
             bare = Path(td)/'Demo-Proposal.git'
             subprocess.check_call(['git', 'clone', '--quiet', '--bare', str(child), str(bare)])
             git(child, 'remote', 'add', 'origin', str(bare))
-            manager.register(vault, 'Demo', 'Demo-Proposal', str(bare))
+            manager.register(vault, 'Demo', 'Legacy-Logical-Name', str(bare))
             git(vault, 'commit', '-m', 'register')
-            manager.register(vault, 'Demo', 'Demo-Proposal', str(bare))
+            manager.register(vault, 'Demo', 'Legacy-Logical-Name', str(bare))
             self.assertEqual(git(vault, 'status', '--porcelain'), '')
             self.assertTrue((child/'.git').is_file())
             clone = Path(td)/'restored'

@@ -130,7 +130,14 @@ def restore_gitfile(vault, project, repo):
     """Recover a missing submodule gitfile without checking out or changing notes."""
     if (project/'.git').exists():
         return
-    location = Path(git(vault, 'rev-parse', '--git-path', 'modules/'+repo).stdout.strip())
+    entries = git(vault, 'config', '-f', '.gitmodules', '--get-regexp', '^submodule[.].*[.]path$', check=False).stdout.splitlines()
+    matches = [line.split(' ', 1)[0][len('submodule.'):-len('.path')] for line in entries if line.split(' ', 1)[1] == str(project.relative_to(vault))]
+    if len(matches) > 1:
+        raise RuntimeError('Multiple submodule mappings point to this project.')
+    logical_name = matches[0] if matches else repo
+    if not re.fullmatch(r'[A-Za-z0-9][A-Za-z0-9._-]*', logical_name):
+        raise RuntimeError('Submodule metadata name requires manual review.')
+    location = Path(git(vault, 'rev-parse', '--git-path', 'modules/'+logical_name).stdout.strip())
     module = location if location.is_absolute() else vault/location
     if not module.is_dir():
         return
